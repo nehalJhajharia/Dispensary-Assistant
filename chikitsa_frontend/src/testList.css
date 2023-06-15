@@ -1,0 +1,28 @@
+/* testList.css */
+
+.test-list-container {
+    padding: 20px;
+  }
+  
+  .test-list-entry {
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .test-list-entry h4 {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  .test-list-entry p {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .test-list-entry img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+  }
+  

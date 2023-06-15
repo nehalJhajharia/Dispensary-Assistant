@@ -1,0 +1,17 @@
+/* vaccinationHistory.css */
+
+.vaccination-history-container {
+    padding: 20px;
+  }
+  
+  .vaccination-history-entry {
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .vaccination-history-entry p {
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  
