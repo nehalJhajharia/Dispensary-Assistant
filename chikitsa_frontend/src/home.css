@@ -1,0 +1,37 @@
+/* home.css */
+
+.home-container {
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  .home-title {
+    font-size: 32px;
+    margin-bottom: 30px;
+  }
+  
+  .signin-section {
+    margin-top: 50px;
+  }
+  
+  .signin-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .signin-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    margin-right: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .signin-link:hover {
+    background-color: #45a049;
+  }
+  
