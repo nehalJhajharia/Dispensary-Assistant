@@ -1,13 +1,14 @@
 from django.http import JsonResponse
+from django.forms.models import model_to_dict
 from .models import MyUser, Patient, Doctor, Student, Staff, MedicalHistory
-from .models import Vaccine, Test, MedicineMaster
+from .models import Vaccine, Test, MedicineMaster, Appointment
 from .serializers import MyUserSerializer, PatientSerializer, DoctorSerializer
 from .serializers import StudentSerializer, StaffSerializer, MedicalHistorySerializer
 from .serializers import VaccineSerializer, TestSerializer, MedicineMasterSerializer
+from .serializers import AppointmentSerializer
 
 def getMyUser(request):
     user_id = request.GET.get('id')
-    # user_id = 3
     user = MyUser.objects.get(id = user_id)
     user_data = MyUserSerializer(user).data
 
@@ -61,8 +62,8 @@ def getVaccines(request):
     return JsonResponse({'vaccines_data': vaccines_data})
 
 def getTests(request):
-    patient_id = request.GET.get('patient_id')
-    tests = Test.objects.filter(patient_id = patient_id)
+    appointment_id = request.GET.get('appointment_id')
+    tests = Test.objects.filter(appointment_id = appointment_id)
     tests_data = TestSerializer(tests, many=True).data
     return JsonResponse({'tests_data': tests_data})
 
@@ -70,3 +71,17 @@ def getAllMedicines(request):
     all_medicines = MedicineMaster.objects.all()
     all_med_data = MedicineMasterSerializer(all_medicines, many=True).data
     return JsonResponse({'all_med_data': all_med_data})
+
+def getAppointmentByPatient(request):
+    patient_id = request.GET.get('patient_id')
+    appointments = Appointment.objects.filter(patient_id=patient_id)
+    appointments_data = AppointmentSerializer(appointments, many=True).data
+    print(appointments_data)
+    return JsonResponse({'appointments': appointments_data})
+
+def getAppointmentByDoctor(request):
+    doctor_id = request.GET.get('doctor_id')
+    appointments = Appointment.objects.filter(doctor_id=doctor_id)
+    appointments_data = AppointmentSerializer(appointments, many=True).data
+    print(appointments_data)
+    return JsonResponse({'appointments': appointments_data})

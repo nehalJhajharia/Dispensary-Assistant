@@ -3,8 +3,10 @@ from . import views
 
 urlpatterns = [
     path('user/', views.getMyUser),
-    path('user/medical-history/', views.getMedicalHistory),
-    path('user/vaccines/', views.getVaccines),
-    path('user/tests/', views.getTests),
     path('all-medicines/', views.getAllMedicines),
+    path('patient/medical-history/', views.getMedicalHistory),
+    path('patient/vaccines/', views.getVaccines),
+    path('patient/tests/', views.getTests),
+    path('patient/appointments/', views.getAppointmentByPatient),
+    path('doctor/appointments/', views.getAppointmentByDoctor),
 ]

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .models import Patient, Doctor, Appointment
 
 class MyUserSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -15,7 +16,7 @@ class MyUserSerializer(serializers.Serializer):
 
 class PatientSerializer(serializers.Serializer):
     mobile_emergency = serializers.CharField()
-    age = serializers.IntegerField()
+    dob = serializers.DateField()
     sex = serializers.CharField()
     blood_group = serializers.CharField()
     staff_or_student = serializers.BooleanField()
@@ -23,7 +24,6 @@ class PatientSerializer(serializers.Serializer):
 class DoctorSerializer(serializers.Serializer):
     degree = serializers.CharField()
     specialization = serializers.CharField()
-    experience = serializers.IntegerField()
 
 class StudentSerializer(serializers.Serializer):
     course = serializers.CharField()
@@ -40,7 +40,8 @@ class StaffSerializer(serializers.Serializer):
     employee_code = serializers.CharField()
 
 class MedicalHistorySerializer(serializers.Serializer):
-    # patient_id = serializers.IntegerField()
+    id = serializers.IntegerField()
+    patient_id = serializers.PrimaryKeyRelatedField(queryset=Patient.objects.all())
     hypertension_self = serializers.BooleanField()
     hypertension_father = serializers.BooleanField()
     hypertension_mother = serializers.BooleanField()
@@ -53,11 +54,13 @@ class MedicalHistorySerializer(serializers.Serializer):
 
 class VaccineSerializer(serializers.Serializer):
     id = serializers.IntegerField()
+    patient_id = serializers.PrimaryKeyRelatedField(queryset=Patient.objects.all())
     name = serializers.CharField()
     date = serializers.DateField()
 
 class TestSerializer(serializers.Serializer):
     id = serializers.IntegerField()
+    appointment_id = serializers.PrimaryKeyRelatedField(queryset=Appointment.objects.all())
     name = serializers.CharField()
     date = serializers.DateField()
     remarks = serializers.CharField()
@@ -67,5 +70,15 @@ class MedicineMasterSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField()
     count = serializers.IntegerField()
+    type = serializers.CharField()
     date_of_mfg = serializers.DateField()
     date_of_expiry = serializers.DateField()
+
+class AppointmentSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    patient_id = serializers.PrimaryKeyRelatedField(queryset=Patient.objects.all())
+    doctor_id = serializers.PrimaryKeyRelatedField(queryset=Doctor.objects.all())
+    datetime = serializers.DateTimeField()
+    appointment_created_at = serializers.DateTimeField()
+    remarks = serializers.CharField()
+    diagnosis_duration_days = serializers.IntegerField()
