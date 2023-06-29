@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.core.exceptions import ValidationError
 from django.forms.models import model_to_dict
 from .models import MyUser, Patient, Doctor, Student, Staff, MedicalHistory
 from .models import Vaccine, Test, MedicineMaster, Appointment
@@ -50,14 +51,14 @@ def getStaff(user_id):
     return staff_data
 
 def getMedicalHistory(request):
-    patient_id = request.GET.get('patient_id')
-    medical_history = MedicalHistory.objects.get(patient_id = patient_id)
+    patient = request.GET.get('patient_id')
+    medical_history = MedicalHistory.objects.get(patient = patient)
     history_data = MedicalHistorySerializer(medical_history).data
     return JsonResponse(history_data)
 
 def getVaccines(request):
-    patient_id = request.GET.get('patient_id')
-    vaccines = Vaccine.objects.filter(patient_id = patient_id)
+    patient = request.GET.get('patient_id')
+    vaccines = Vaccine.objects.filter(patient_id = patient)
     vaccines_data = VaccineSerializer(vaccines, many=True).data
     return JsonResponse({'vaccines_data': vaccines_data})
 
@@ -74,14 +75,156 @@ def getAllMedicines(request):
 
 def getAppointmentByPatient(request):
     patient_id = request.GET.get('patient_id')
-    appointments = Appointment.objects.filter(patient_id=patient_id)
+    appointments = Appointment.objects.filter(patient=patient_id)
     appointments_data = AppointmentSerializer(appointments, many=True).data
     print(appointments_data)
     return JsonResponse({'appointments': appointments_data})
 
 def getAppointmentByDoctor(request):
     doctor_id = request.GET.get('doctor_id')
-    appointments = Appointment.objects.filter(doctor_id=doctor_id)
+    appointments = Appointment.objects.filter(doctor=doctor_id)
     appointments_data = AppointmentSerializer(appointments, many=True).data
     print(appointments_data)
     return JsonResponse({'appointments': appointments_data})
+
+def getNewMyUser(request):
+    user_data = request.GET
+
+    try:
+        new_user = MyUser()
+
+        for field in user_data:
+                if hasattr(new_user, field):
+                    setattr(new_user, field, user_data[field])
+
+        new_user.save()
+        return new_user
+    except KeyError as e:
+        return JsonResponse({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return JsonResponse({'error': str(e)})
+
+def createDoctor(request):
+    doctor_data = request.GET
+    user = getNewMyUser(request)
+    if type(user) is MyUser:
+        print('user created')
+        try:
+            new_doctor = Doctor()
+            new_doctor.user = user
+
+            for field in doctor_data:
+                if hasattr(new_doctor, field):
+                    setattr(new_doctor, field, doctor_data[field])
+
+            new_doctor.save()
+            return JsonResponse({'message': 'Doctor created successfully'})
+        except KeyError as e:
+            user.delete()
+            return JsonResponse({'error': f'Missing required field: {str(e)}'})
+        except ValidationError as e:
+            user.delete()
+            return JsonResponse({'error': str(e)})
+    else:
+        return user
+
+def getNewPatient(request):
+    patient_data = request.GET
+    user = getNewMyUser(request)
+    if type(user) is MyUser:
+        print('user created')
+        try:
+            new_patient = Patient()
+            new_patient.user = user
+
+            for field in patient_data:
+                if hasattr(new_patient, field):
+                    setattr(new_patient, field, patient_data[field])
+
+            new_patient.save()
+            return new_patient, user
+        except KeyError as e:
+            user.delete()
+            return JsonResponse({'error': f'Missing required field: {str(e)}'})
+        except ValidationError as e:
+            user.delete()
+            return JsonResponse({'error': str(e)})
+    else:
+        return user
+
+def createStudent(request):
+    student_data = request.GET
+    patient, user = getNewPatient(request)
+    if type(patient) is Patient:
+        print('patient created')
+        try:
+            new_student = Student()
+            new_student.patient = patient
+
+            for field in student_data:
+                if hasattr(new_student, field):
+                    setattr(new_student, field, student_data[field])
+
+            new_student.save()
+            return JsonResponse({'message': 'Student created successfully'})
+        except KeyError as e:
+            user.delete()
+            return JsonResponse({'error': f'Missing required field: {str(e)}'})
+        except ValidationError as e:
+            return JsonResponse({'error': str(e)})
+    else:
+        return patient
+    
+def createStaff(request):
+    staff_data = request.GET
+    patient, user = getNewPatient(request)
+    if type(patient) is Patient:
+        print('patient created')
+        try:
+            new_staff = Staff()
+            new_staff.patient = patient
+
+            for field in staff_data:
+                if hasattr(new_staff, field):
+                    setattr(new_staff, field, staff_data[field])
+
+            new_staff.save()
+            return JsonResponse({'message': 'Staff created successfully'})
+        except KeyError as e:
+            user.delete()
+            return JsonResponse({'error': f'Missing required field: {str(e)}'})
+        except ValidationError as e:
+            return JsonResponse({'error': str(e)})
+    else:
+        return patient
+
+def updateMedicalHistory(request):
+    print('med')
+    med_hist_data = request.GET
+    patient_id = med_hist_data.get('patient_id')
+    patient_exists = Patient.objects.filter(pk=patient_id).exists()
+
+    if (patient_exists is False):
+        return JsonResponse({'message': 'Patient does not exist!!'})
+    
+    try:
+        patient = Patient.objects.get(user_id=patient_id)
+        prev_med = MedicalHistory.objects.filter(patient=patient).exists()
+        med_hist = MedicalHistory()
+        operation = 'created'
+        if prev_med:
+            operation = 'updated'
+            med_hist = MedicalHistory.objects.get(patient=patient)
+
+        med_hist.patient = patient
+
+        for field in med_hist_data:
+            if hasattr(med_hist, field):
+                setattr(med_hist, field, med_hist_data[field])
+
+        med_hist.save()
+        return JsonResponse({'message': f'Medical history {operation}'})
+    except KeyError as e:
+        return JsonResponse({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return JsonResponse({'error': str(e)})
