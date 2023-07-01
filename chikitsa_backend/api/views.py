@@ -77,6 +77,22 @@ def getVaccines(request):
     vaccines_data = VaccineSerializer(vaccines, many=True).data
     return JsonResponse({'vaccines_data': vaccines_data})
 
+def createNewVaccine(request):
+    try:
+        vaccine_data = request.GET
+        vaccine = Vaccine()
+        patient = Patient.objects.get(user_id = vaccine_data['patient_id'])
+        vaccine.patient = patient
+        vaccine.name = vaccine_data['name']
+        vaccine.date = vaccine_data['date']
+
+        vaccine.save()
+        return JsonResponse({'message': 'Vaccine created successfully.'})
+    except KeyError as e:
+        return JsonResponse({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return JsonResponse({'error': str(e)})
+
 def getTests(request):
     appointment_id = request.GET.get('appointment_id')
     tests = Test.objects.filter(appointment_id = appointment_id)
@@ -106,8 +122,8 @@ def getAllMedicines(request):
     return JsonResponse({'all_med_data': all_med_data})
 
 def createNewMedicine(request):
-    medicine_data = request.GET
     try:
+        medicine_data = request.GET
         new_medicine = MedicineMaster()
         for field in medicine_data:
             if hasattr(new_medicine, field):
@@ -246,7 +262,6 @@ def createStaff(request):
         return patient
 
 def updateMedicalHistory(request):
-    print('med')
     med_hist_data = request.GET
     patient_id = med_hist_data.get('patient_id')
     patient_exists = Patient.objects.filter(pk=patient_id).exists()
@@ -277,10 +292,10 @@ def updateMedicalHistory(request):
         return JsonResponse({'error': str(e)})
 
 def createAppointment(request):
-    appointment_data = request.GET
-    patient_id = appointment_data['patient_id']
-    doctor_id = appointment_data['doctor_id']
     try:
+        appointment_data = request.GET
+        patient_id = appointment_data['patient_id']
+        doctor_id = appointment_data['doctor_id']
         appointment = Appointment()
         patient = Patient.objects.get(user_id=patient_id)
         doctor = Doctor.objects.get(user_id=doctor_id)

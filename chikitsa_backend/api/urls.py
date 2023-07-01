@@ -8,6 +8,7 @@ urlpatterns = [
     path('patient/get/medical-history/', views.getMedicalHistory), # (patient_id)
     path('patient/update/medical-history/', views.updateMedicalHistory), # (patient_id)
     path('patient/get/vaccines/', views.getVaccines), # (patient_id)
+    path('patient/create/vaccine/', views.createNewVaccine), # (patient_id, name, date)
     path('patient/get/tests/', views.getTests), # (appointment_id)
     path('patient/get/all-tests/', views.getAllTests), # (patient_id)
     path('patient/get/appointments/', views.getAppointmentByPatient), # (patient_id)
@@ -16,5 +17,5 @@ urlpatterns = [
     path('doctor/get/appointments/', views.getAppointmentByDoctor), # (doctor_id)
     path('doctor/get/all-medicines/', views.getAllMedicines), # ()
     path('doctor/create/medicine/', views.createNewMedicine), # (all medicine details)
-    path('doctor/get/all-doctors/', views.getAllDoctors),
+    path('doctor/get/all-doctors/', views.getAllDoctors), # ()
 ]
