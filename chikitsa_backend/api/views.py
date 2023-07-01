@@ -92,6 +92,24 @@ def createNewVaccine(request):
         return JsonResponse({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return JsonResponse({'error': str(e)})
+    
+def createNewTest(request):
+    try:
+        test_data = request.GET
+        test = Test()
+        appointment = Appointment.objects.get(id=test_data['appointment_id'])
+        test.appointment = appointment
+
+        for field in test_data:
+                if hasattr(test, field):
+                    setattr(test, field, test_data[field])
+
+        test.save()
+        return JsonResponse({'message': 'Test created successfully.'})
+    except KeyError as e:
+        return JsonResponse({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return JsonResponse({'error': str(e)})
 
 def getTests(request):
     appointment_id = request.GET.get('appointment_id')
