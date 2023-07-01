@@ -98,7 +98,7 @@ def createNewMedicine(request):
                 setattr(new_medicine, field, medicine_data[field])
 
         new_medicine.save()
-        return JsonResponse({'message': 'Medicine added successfully.'})
+        return JsonResponse({'message': 'Medicine created successfully.'})
     except KeyError as e:
         return JsonResponse({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
@@ -261,4 +261,21 @@ def updateMedicalHistory(request):
         return JsonResponse({'error': str(e)})
 
 def createAppointment(request):
-    print(0)
+    appointment_data = request.GET
+    patient_id = appointment_data['patient_id']
+    doctor_id = appointment_data['doctor_id']
+    try:
+        appointment = Appointment()
+        patient = Patient.objects.get(user_id=patient_id)
+        doctor = Doctor.objects.get(user_id=doctor_id)
+
+        appointment.patient = patient
+        appointment.doctor = doctor
+        appointment.datetime = appointment_data['datetime']
+
+        appointment.save()
+        return JsonResponse({'message': 'Appointment created successfully.'})
+    except KeyError as e:
+        return JsonResponse({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return JsonResponse({'error': str(e)})
