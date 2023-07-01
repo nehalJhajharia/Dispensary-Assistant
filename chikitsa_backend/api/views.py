@@ -73,6 +73,21 @@ def getAllMedicines(request):
     all_med_data = MedicineMasterSerializer(all_medicines, many=True).data
     return JsonResponse({'all_med_data': all_med_data})
 
+def createNewMedicine(request):
+    medicine_data = request.GET
+    try:
+        new_medicine = MedicineMaster()
+        for field in medicine_data:
+            if hasattr(new_medicine, field):
+                setattr(new_medicine, field, medicine_data[field])
+
+        new_medicine.save()
+        return JsonResponse({'message': 'Medicine added successfully.'})
+    except KeyError as e:
+        return JsonResponse({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return JsonResponse({'error': str(e)})
+
 def getAppointmentByPatient(request):
     patient_id = request.GET.get('patient_id')
     appointments = Appointment.objects.filter(patient=patient_id)
@@ -228,3 +243,6 @@ def updateMedicalHistory(request):
         return JsonResponse({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return JsonResponse({'error': str(e)})
+
+def createAppointment(request):
+    print(0)
