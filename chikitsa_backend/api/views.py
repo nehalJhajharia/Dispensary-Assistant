@@ -46,7 +46,6 @@ def getDoctor(user_id):
 
 def getAllDoctors(request):
     all_doctors = Doctor.objects.all()
-    print(all_doctors)
     all_doc_data = {}
 
     for doctor in all_doctors:
@@ -83,6 +82,23 @@ def getTests(request):
     tests = Test.objects.filter(appointment_id = appointment_id)
     tests_data = TestSerializer(tests, many=True).data
     return JsonResponse({'tests_data': tests_data})
+
+def getAllTests(request):
+    try:
+        patient_id = request.GET.get('patient_id')
+        all_appointments = Appointment.objects.filter(patient=patient_id)
+        all_tests_data = {}
+        for appointment in all_appointments:
+            tests = Test.objects.filter(appointment=appointment)
+            for test in tests:
+                test_data = TestSerializer(test).data
+                all_tests_data[str(test.id)] = test_data
+
+        return JsonResponse(all_tests_data)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
 
 def getAllMedicines(request):
     all_medicines = MedicineMaster.objects.all()
