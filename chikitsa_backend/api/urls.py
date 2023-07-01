@@ -15,4 +15,5 @@ urlpatterns = [
     path('doctor/appointments/', views.getAppointmentByDoctor), # (doctor_id)
     path('doctor/all-medicines/', views.getAllMedicines), # ()
     path('doctor/create/medicine/', views.createNewMedicine), # (all medicine details)
+    path('doctor/all-doctors/', views.getAllDoctors),
 ]

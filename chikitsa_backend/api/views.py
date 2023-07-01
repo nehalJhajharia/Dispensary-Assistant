@@ -10,6 +10,10 @@ from .serializers import AppointmentSerializer
 
 def getMyUser(request):
     user_id = request.GET.get('id')
+    user_data = getMyUserById(user_id)
+    return JsonResponse(user_data)
+
+def getMyUserById(user_id):
     user = MyUser.objects.get(id = user_id)
     user_data = MyUserSerializer(user).data
 
@@ -28,7 +32,7 @@ def getMyUser(request):
         doctor_data = getDoctor(user_id)
         user_data.update(doctor_data)
 
-    return JsonResponse(user_data)
+    return user_data
 
 def getPatient(user_id):
     patient = Patient.objects.get(user_id = user_id)
@@ -39,6 +43,18 @@ def getDoctor(user_id):
     doctor = Doctor.objects.get(user_id = user_id)
     doctor_data = DoctorSerializer(doctor).data
     return doctor_data
+
+def getAllDoctors(request):
+    all_doctors = Doctor.objects.all()
+    print(all_doctors)
+    all_doc_data = {}
+
+    for doctor in all_doctors:
+        id = doctor.user_id
+        doc_data = getMyUserById(id)
+        all_doc_data[f'{str(id)}'] = f'{str(doc_data)}'
+
+    return JsonResponse(all_doc_data)
 
 def getStudent(user_id):
     student = Student.objects.get(patient_id = user_id)
