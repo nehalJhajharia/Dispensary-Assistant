@@ -20,12 +20,12 @@ class MyUser(models.Model):
         return str(self.id) + ' : ' + self.first_name + ' ' + self.last_name
         
 class Doctor(models.Model):
-    user_id = models.OneToOneField(MyUser, primary_key=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(MyUser, primary_key=True, on_delete=models.CASCADE)
     degree = models.CharField(max_length=100, null=False)
     specialization = models.CharField(max_length=100, null=False)
 
 class Patient(models.Model):
-    user_id = models.OneToOneField(MyUser, primary_key=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(MyUser, primary_key=True, on_delete=models.CASCADE)
     mobile_emergency = models.CharField(validators=[minl(10),], max_length=10, null=False)
     dob = models.DateField()
     sex = models.CharField(max_length=20, null=False)
@@ -33,23 +33,23 @@ class Patient(models.Model):
     staff_or_student = models.BooleanField() # True for staff
 
 class Student(models.Model):
-    patient_id = models.OneToOneField(Patient, primary_key=True, on_delete=models.CASCADE)
-    course = models.CharField(max_length=30, default="nil")
-    admission_num = models.CharField(max_length=20, default="nil")
-    hostel_num_and_name = models.CharField(max_length=100, default="nil")
-    room_num = models.CharField(max_length=5, default="nil")
-    father_occupation = models.CharField(max_length=100, default="nil")
-    mother_occupation = models.CharField(max_length=100, default="nil")
-    father_mobile = models.CharField(max_length=100, default="nil")
-    mother_mobile = models.CharField(max_length=100, default="nil")
+    patient = models.OneToOneField(Patient, primary_key=True, on_delete=models.CASCADE)
+    course = models.CharField(max_length=30)
+    admission_num = models.CharField(max_length=20)
+    hostel_num_and_name = models.CharField(max_length=100)
+    room_num = models.CharField(max_length=5)
+    father_occupation = models.CharField(max_length=100)
+    mother_occupation = models.CharField(max_length=100)
+    father_mobile = models.CharField(max_length=100)
+    mother_mobile = models.CharField(max_length=100)
     
 class Staff(models.Model):
     patient = models.OneToOneField(Patient, primary_key=True, on_delete=models.CASCADE)
     staff_or_relative = models.BooleanField(default=True) # True for staff
-    employee_code = models.CharField(max_length=20, default="nil")
+    employee_code = models.CharField(max_length=20)
 
 class MedicalHistory(models.Model):
-    patient_id = models.ForeignKey(Patient ,primary_key=False, on_delete=models.CASCADE, to_field='user_id')
+    patient = models.ForeignKey(Patient ,primary_key=False, on_delete=models.CASCADE, to_field='user_id')
     hypertension_self = models.BooleanField(default=False)
     hypertension_father = models.BooleanField(default=False)
     hypertension_mother = models.BooleanField(default=False)
@@ -61,7 +61,7 @@ class MedicalHistory(models.Model):
     allergic_medicine = models.CharField(max_length=200, default="nil")
     
 class Vaccine(models.Model):
-    patient_id = models.ForeignKey(Patient ,primary_key=False, on_delete=models.CASCADE, to_field='user_id')
+    patient = models.ForeignKey(Patient ,primary_key=False, on_delete=models.CASCADE, to_field='user_id')
     name = models.CharField(max_length=100, null=False)
     date = models.DateField()
     
@@ -73,15 +73,15 @@ class MedicineMaster(models.Model):
     date_of_expiry = models.DateField()
 
 class Appointment(models.Model):
-    patient_id = models.ForeignKey(Patient, primary_key=False, on_delete=models.CASCADE, to_field='user_id')
-    doctor_id = models.ForeignKey(Doctor, primary_key=False, on_delete=models.CASCADE, to_field='user_id')
+    patient = models.ForeignKey(Patient, primary_key=False, on_delete=models.CASCADE, to_field='user_id')
+    doctor = models.ForeignKey(Doctor, primary_key=False, on_delete=models.CASCADE, to_field='user_id')
     datetime = models.DateTimeField()
     appointment_created_at = models.DateTimeField(auto_now_add=True)
     remarks = models.CharField(max_length=200, default="nil")
     diagnosis_duration_days = models.IntegerField(default=0)
 
 class Symptoms(models.Model):
-    appointment_id = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE, to_field='id')
+    appointment = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE, to_field='id')
     fever = models.IntegerField(default=0, validators=[minv(0), maxv(3)])
     recorded = models.BooleanField(default=False)
     continuous_fever = models.BooleanField(default=False)
@@ -110,15 +110,15 @@ class Symptoms(models.Model):
     other = models.CharField(max_length=200, default='nil')
 
 class Test(models.Model):
-    appointment_id = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE, to_field='id')
+    appointment = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE, to_field='id')
     name = models.CharField(max_length=100, null=False)
     date = models.DateField()
     remarks = models.CharField(max_length=200, null=True, blank=True)
     image = models.ImageField(null=True, blank=True)
 
 class Medicine(models.Model):
-    appointment_id = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE, to_field='id')
-    medicine_id = models.ForeignKey(MedicineMaster, primary_key=False, on_delete=models.CASCADE, to_field='id')
+    appointment = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE, to_field='id')
+    medicine = models.ForeignKey(MedicineMaster, primary_key=False, on_delete=models.CASCADE, to_field='id')
     start_date = models.DateField()
     end_date = models.DateField()
     morning = models.BooleanField(default=False)
