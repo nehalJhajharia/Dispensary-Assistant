@@ -7,6 +7,7 @@ import ProfilePage from './ProfilePage';
 import CreateAppointment from './CreateAppointment';
 import { UserProvider } from './context/UserContext';
 import SignupPage from './Signup';
+import CreateVaccine from './CreateVaccine';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route exact path="/login" element={<Login/>} />
           <Route exact path='/profile' element={<ProfilePage/>} />
           <Route exact path="/create-appointment" element={<CreateAppointment />} />
+          <Route exact path="/create-vaccine" element={<CreateVaccine />} />
           <Route exact path="/signup" element={<SignupPage />} />
         </Routes>
       </div>

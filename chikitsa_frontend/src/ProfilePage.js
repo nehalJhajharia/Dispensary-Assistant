@@ -45,7 +45,7 @@ const ProfilePage = () => {
       case 'medicalHistory':
         return <MedicalHistory user_id={user_id}/>;
       case 'vaccinationHistory':
-        return <VaccinationHistory />;
+        return <VaccinationHistory user_id={user_id}/>;
       case 'testList':
         return <TestList user_id={user_id}/>;
       case 'logout':

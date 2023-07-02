@@ -1,24 +1,24 @@
 import React, { useContext, useState } from 'react';
 import { UserContext } from './context/UserContext';
 
-const CreateAppointment = () => {
+const CreateVaccine = () => {
+  const [vaccineName, setVaccineName] = useState('');
   const [date, setDate] = useState('');
   const url = 'http://192.168.193.8:8000/';
-  const user_uri = url + 'api/patient/create/appointment/';
-  const {user_id} = useContext(UserContext);
+  const user_uri = url + 'api/patient/create/vaccine/';
+  const { user_id } = useContext(UserContext); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Prepare the data
-    const patientId = user_id;
-    const doctorId = '1';
+    const patientId = user_id; 
 
-    // Create an object with the appointment data
-    const appointmentData = {
+    // Create an object with the vaccine data
+    const vaccineData = {
       patient_id: patientId,
-      doctor_id: doctorId,
-      datetime: date,
+      name: vaccineName,
+      date: date,
     };
 
     // Send the data to the server
@@ -28,25 +28,34 @@ const CreateAppointment = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(appointmentData),
-      })
-      .then()
-      .catch(Error);
+        body: JSON.stringify(vaccineData),
+      });
+
+      console.log(vaccineData);
 
       if (response.ok) {
-        console.log(response);
+        console.log('Vaccine created successfully');
       } else {
-        // Handle error
+        console.log('Failed to create vaccine');
       }
     } catch (error) {
-      console.error('Error creating appointment:', error);
+      console.error('Error creating vaccine:', error);
     }
   };
 
   return (
     <div>
-      <h2>Create Appointment</h2>
+      <h2>Create Vaccine</h2>
       <form onSubmit={handleSubmit}>
+        <label htmlFor="vaccineName">Vaccine Name:</label>
+        <input
+          type="text"
+          id="vaccineName"
+          value={vaccineName}
+          onChange={(e) => setVaccineName(e.target.value)}
+          required
+        />
+
         <label htmlFor="date">Date:</label>
         <input
           type="date"
@@ -55,10 +64,11 @@ const CreateAppointment = () => {
           onChange={(e) => setDate(e.target.value)}
           required
         />
+
         <button type="submit">Submit</button>
       </form>
     </div>
   );
 };
 
-export default CreateAppointment;
+export default CreateVaccine;
