@@ -1,43 +1,62 @@
 // TestList.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './testList.css';
 
-const TestList = () => {
+function TestList({user_id}) {
+  const [testList, setTestList] = useState([]);
+  const url = 'http://192.168.193.8:8000/';
+  const testListUrl = url + 'api/patient/tests/?appointment_id=';
 
-  const testListEntries = [
-    {
-      id: 1,
-      patient_id: 1,
-      test_name: 'Blood Test',
-      date: '2022-03-10',
-      remarks: 'Normal',
-      img: 'blood_test.jpg',
-    },
-    {
-      id: 2,
-      patient_id: 1,
-      test_name: 'X-Ray',
-      date: '2022-06-05',
-      remarks: 'No abnormalities found',
-      img: 'x_ray.jpg',
-    },
-    // Add more entries as needed
-  ];
+  useEffect(() => {
+    fetchTestList();
+  }, []);
+
+  const fetchTestList = async () => {
+    try {
+      const response = await fetch(`${testListUrl}${user_id}`);
+      if (response.ok) {
+        const jsonData = await response.json();
+        const key = Object.keys(jsonData)[0]
+        setTestList(jsonData[key]);
+      } else {
+        console.error('Error fetching test list:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching test list:', error);
+    }
+  };
 
   return (
-    <div className="test-list-container">
-      <h3>Test List</h3>
-      {/* Medical test history entries */}
-      {testListEntries.map((entry) => (
-        <div key={entry.id} className="test-list-entry">
-          <h4>{entry.test_name}</h4>
-          <p>Date: {entry.date}</p>
-          <p>Remarks: {entry.remarks}</p>
-          <img src={entry.img} alt={entry.test_name} />
-        </div>
-      ))}
+    <div className='test-container'>
+      <h2>Test List</h2>
+      <tbody>
+        <tr>
+          <th>ID</th>
+          <th>Appointment ID</th>
+          <th>Name</th>
+          <th>Date</th>
+          <th>Remarks</th>
+          <th>Image</th>
+        </tr>
+        {testList.map((item)=>(
+          <tr key={item.id}>
+            <td>{item.id}</td>
+            <td>{item.appointment_id}</td>
+            <td>{item.name}</td>
+            <td>{item.date}</td>
+            <td>{item.remarks}</td>
+            <td>
+              {item.img && (
+                <a href={test.img} target="_blank" rel="noopener noreferrer">
+                  View Image
+                </a>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
     </div>
   );
-};
+}
 
 export default TestList;

@@ -1,42 +1,40 @@
-/* .profile-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background-color: rgb(228, 228, 228);
-} */
-
-.navbar {
+/* .navbar { 
   background-color: rgb(29, 185, 99);
   text-align: right;
   position: fixed;
   top: 0;
   right: 0;
   left: 0;
+  z-index: 1; 
 }
 
-.sidebar-appointments-container {
-  position: relative;
+.content-container {
+  margin-top: 100px;
 }
 
-.sidebar-container {
-  background-color: rgb(228, 228, 228);
-  padding: 20px;
+.container {
+  height: 100%;
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 70%;
-  margin: 3%;
-  margin-left: 1%;
-  border-radius: 20px;
+  top: 50px;
+  overflow-x: hidden;
+  padding-top: 20px;
 }
 
-.appointments-container {
-  background-color: rgb(228, 228, 228);
-  padding: 20px;
-  position: fixed;
-  right: 0;
-  top: 0;
-  left: 25%;
-  margin: 3%;
-  border-radius: 20px;
+.sidebar {
+  left: 40px;
+  width: 40%;
+  background-color: #e7e0e0;
 }
+
+.deatails {
+  right: 40px;
+  width: 100%;
+  background-color: #e7e0e0;
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  transform: translate(-50%, -50%);
+} */

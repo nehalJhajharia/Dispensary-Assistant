@@ -1,28 +1,37 @@
 /* testList.css */
 
-.test-list-container {
-    padding: 20px;
-  }
-  
-  .test-list-entry {
-    background-color: #f0f0f0;
-    padding: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .test-list-entry h4 {
-    font-size: 16px;
-    margin-bottom: 5px;
-  }
-  
-  .test-list-entry p {
-    font-size: 14px;
-    margin-bottom: 5px;
-  }
-  
-  .test-list-entry img {
-    max-width: 100%;
-    height: auto;
-    margin-top: 10px;
-  }
-  
+.test-container {
+  text-align: center;
+  overflow-x: auto;
+}
+
+.test-container h2 {
+  color: rgb(29, 185, 99);
+}
+
+.test-container table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.test-container th,
+.test-container td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  word-break: break-all;
+}
+
+.test-container th {
+  background-color: #f2f2f2;
+}
+
+.test-container tr:hover {
+  background-color: #f5f5f5;
+}
+
+.test-container a {
+  text-decoration: none;
+  color: #007bff;
+}

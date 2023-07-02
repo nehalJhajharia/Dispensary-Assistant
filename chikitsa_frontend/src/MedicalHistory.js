@@ -1,41 +1,75 @@
-import React from 'react';
+//MedicalHistory
+import React, { useState, useEffect } from 'react';
 import './medicalHistory.css'
 
-const MedicalHistory = ({user_id}) => {
+function MedicalHistory ({user_id}) {
+  const [medicalData, setMedicalData] = useState([]);
+  const url = 'http://192.168.193.8:8000/';
+  const user_uri = url + 'api/patient/get/medical-history/?patient_id=';
 
-    const medicalHistoryEntries = [
-        {
-          patient_id: 1,
-          hypertension_self: true,
-          hypertension_father: false,
-          hypertension_mother: true,
-          diabetes_self: true,
-          diabetes_father: true,
-          diabetes_mother: false,
-          prev_operation_injury: 'Yes',
-          chronic_disease: 'No',
-          allergic_medicine: 'Penicillin',
-        },
-        // Add more entries as needed
-      ];
+  useEffect(() => {
+    fetchMedicalHistory();
+  }, []);
+
+  const fetchMedicalHistory = async () => {
+    try {
+      const response = await fetch(`${user_uri}${user_id}`);
+      if(response.ok){
+        const jsonData = await response.json();
+        setMedicalData(jsonData);
+      }else{
+        console.error('Error fetching medical history:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching medical history:', error);
+    }
+  };
 
   return (
-    <div className='medical-history-container'>
-      {/* Medical history entries */}
-      {medicalHistoryEntries.map((entry) => (
-      <div key={entry.patient_id} className='medical-history-entry'>
-        <h3>Medical History Entry</h3>
-        <p>Hypertension (Self): {entry.hypertension_self ? 'Yes' : 'No'}</p>
-        <p>Hypertension (Father): {entry.hypertension_father ? 'Yes' : 'No'}</p>
-        <p>Hypertension (Mother): {entry.hypertension_mother ? 'Yes' : 'No'}</p>
-        <p>Diabetes (Self): {entry.diabetes_self ? 'Yes' : 'No'}</p>
-        <p>Diabetes (Father): {entry.diabetes_father ? 'Yes' : 'No'}</p>
-        <p>Diabetes (Mother): {entry.diabetes_mother ? 'Yes' : 'No'}</p>
-        <p>Previous Operation/Injury: {entry.prev_operation_injury}</p>
-        <p>Chronic Disease: {entry.chronic_disease}</p>
-        <p>Allergic Medicine: {entry.allergic_medicine}</p>
+    <div>
+      <h2>Medical History</h2>
+      <div>
+      <table>
+        <tbody>
+          <tr>
+            <td>Allergic Medicine</td>
+            <td>{medicalData.allergic_medicine}</td>
+          </tr>
+          <tr>
+            <td>Chronic Disease</td>
+            <td>{medicalData.chronic_disease}</td>
+          </tr>
+          <tr>
+            <td>Previous Operation Injury</td>
+            <td>{medicalData.prev_operation_injury}</td>
+          </tr>
+          <tr>
+            <td>Diabetes (Self)</td>
+            <td>{String(medicalData.diabetes_self)}</td>
+          </tr>
+          <tr>
+            <td>Diabetes (Mother)</td>
+            <td>{String(medicalData.diabetes_mother)}</td>
+          </tr>
+          <tr>
+            <td>Diabetes (Father)</td>
+            <td>{String(medicalData.diabetes_father)}</td>
+          </tr>
+          <tr>
+            <td>Hypertension (Self)</td>
+            <td>{String(medicalData.hypertension_self)}</td>
+          </tr>
+          <tr>
+            <td>Hypertension (Mother)</td>
+            <td>{String(medicalData.hypertension_mother)}</td>
+          </tr>
+          <tr>
+            <td>Hypertension (Mother)</td>
+            <td>{String(medicalData.hypertension_father)}</td>
+          </tr>
+        </tbody>
+      </table>  
       </div>
-    ))}
     </div>
   );
 };

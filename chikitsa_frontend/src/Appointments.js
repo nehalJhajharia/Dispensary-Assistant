@@ -1,42 +1,71 @@
-// Appointments.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './appointments.css';
 
-const Appointments = () => {
-  // Fetch the appointment data from the API or backend
+const Appointments = ({ user_id, userType }) => {
+  const [appointmentsList, setAppointmentsList] = useState([]);
+  const url = 'http://192.168.193.8:8000/';
+  const patientAppointmentsURL = url + 'api/patient/get/appointments/?patient_id=';
+  const doctorAppointmentsURL = url + 'api/doctor/get/appointments/?doctor_id=';
 
-  // Sample appointment data
-  const appointments = [
-    {
-      id: 1,
-      date: '2023-05-20',
-      // Add other appointment details here
-    },
-    {
-      id: 2,
-      date: '2023-05-22',
-      // Add other appointment details here
-    },
-    {
-      id: 3,
-      date: '2023-05-23',
-      // Add other appointment details here
-    },
-    // Add more appointments as needed
-  ];
+  useEffect(() => {
+    fetchAppointmentsList();
+  }, []);
+
+  const fetchAppointmentsList = async () => {
+    try {
+      const response = await fetch(
+        userType === true ? `${patientAppointmentsURL}${user_id}` : `${doctorAppointmentsURL}${user_id}`
+      );
+      if (response.ok) {
+        const jsonData = await response.json();
+        const key = Object.keys(jsonData)[0];
+        setAppointmentsList(jsonData[key]);
+      } else {
+        console.error('Error fetching appointments list:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching appointments list:', error);
+    }
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    const dateTime = new Date(dateTimeString);
+    return dateTime.toLocaleString();
+  };
 
   return (
-    <div className="appointments-container">
+    <div>
       <h2>Appointments</h2>
-      <div className="appointments-list">
-        {appointments.map(appointment => (
-          <div key={appointment.id} className="appointment-item">
-            <p>Appointment ID: {appointment.id}</p>
-            <p>Date: {appointment.date}</p>
-            {/* Add other appointment details here */}
-          </div>
-        ))}
-      </div>
+      {userType === true && (
+        <Link to={`/create-appointment`} className="create-appointment-button" >
+          Create New Appointment
+        </Link>      
+      )}
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Patient ID</th>
+            <th>Doctor ID</th>
+            <th>Date and Time</th>
+            <th>Remarks</th>
+            <th>Diagnosis Duration (Days)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {appointmentsList.map((appointment) => (
+            <tr key={appointment.id}>
+              <td>{appointment.id}</td>
+              <td>{appointment.patient_id}</td>
+              <td>{appointment.doctor_id}</td>
+              <td>{formatDateTime(appointment.datetime)}</td>
+              <td>{appointment.remarks}</td>
+              <td>{appointment.diagnosis_duration_days}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
