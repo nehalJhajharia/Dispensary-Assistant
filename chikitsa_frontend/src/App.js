@@ -6,6 +6,7 @@ import Login from './Login';
 import ProfilePage from './ProfilePage';
 import CreateAppointment from './CreateAppointment';
 import { UserProvider } from './context/UserContext';
+import SignupPage from './Signup';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route exact path="/login" element={<Login/>} />
           <Route exact path='/profile' element={<ProfilePage/>} />
           <Route exact path="/create-appointment" element={<CreateAppointment />} />
+          <Route exact path="/signup" element={<SignupPage />} />
         </Routes>
       </div>
     </Router>
