@@ -120,23 +120,22 @@ def createNewTest(request):
 @api_view(['GET'])
 def getTests(request):
     appointment_id = request.GET.get('appointment_id')
-    tests = Test.objects.filter(appointment_id = appointment_id)
-    tests_data = TestSerializer(tests, many=True).data
-    return Response({'tests_data': tests_data})
+    appointment = Appointment.objects.get(id=appointment_id)
+    return Response({'tests_data': getTestsData(appointment)})
 
 @api_view(['GET'])
 def getAllTests(request):
     try:
         patient_id = request.GET.get('patient_id')
         all_appointments = Appointment.objects.filter(patient=patient_id)
-        all_tests_data = {}
+        all_tests_data = []
         for appointment in all_appointments:
             tests = Test.objects.filter(appointment=appointment)
             for test in tests:
                 test_data = TestSerializer(test).data
-                all_tests_data[str(test.id)] = test_data
+                all_tests_data.append(test_data)
 
-        return Response(all_tests_data)
+        return Response({'all_tests_data': all_tests_data})
 
     except Exception as e:
         return Response({'error': str(e)}, status=500)
@@ -339,7 +338,7 @@ def getMedicines(appointment):
     medicines = Medicine.objects.filter(appointment=appointment)
     return MedicineSerializer(medicines, many=True).data
 
-def getTests(appointment):
+def getTestsData(appointment):
     tests = Test.objects.filter(appointment=appointment)
     return TestSerializer(tests, many=True).data
 
@@ -350,5 +349,5 @@ def getAppointmentDetails(request):
     details = AppointmentSerializer(appointment, many=False).data
     details['symptoms'] = getSymptoms(appointment)
     details['medicines'] = getMedicines(appointment)
-    details['tests'] = getTests(appointment)
+    details['tests'] = getTestsData(appointment)
     return Response(details)
