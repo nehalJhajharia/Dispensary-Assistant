@@ -169,9 +169,8 @@ def getAppointmentByDoctor(request):
     return JsonResponse({'appointments': appointments_data})
 
 def getNewMyUser(request):
-    user_data = request.GET
-
     try:
+        user_data = request.GET
         new_user = MyUser()
 
         for field in user_data:
@@ -189,7 +188,6 @@ def createDoctor(request):
     doctor_data = request.GET
     user = getNewMyUser(request)
     if type(user) is MyUser:
-        print('user created')
         try:
             new_doctor = Doctor()
             new_doctor.user = user
@@ -213,7 +211,6 @@ def getNewPatient(request):
     patient_data = request.GET
     user = getNewMyUser(request)
     if type(user) is MyUser:
-        print('user created')
         try:
             new_patient = Patient()
             new_patient.user = user
@@ -237,7 +234,6 @@ def createStudent(request):
     student_data = request.GET
     patient, user = getNewPatient(request)
     if type(patient) is Patient:
-        print('patient created')
         try:
             new_student = Student()
             new_student.patient = patient
@@ -260,7 +256,6 @@ def createStaff(request):
     staff_data = request.GET
     patient, user = getNewPatient(request)
     if type(patient) is Patient:
-        print('patient created')
         try:
             new_staff = Staff()
             new_staff.patient = patient
