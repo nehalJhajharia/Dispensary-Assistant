@@ -82,16 +82,32 @@ def getVaccines(request):
     vaccines_data = VaccineSerializer(vaccines, many=True).data
     return Response({'vaccines_data': vaccines_data})
 
+# def createNewVaccine(request):
+#     try:
+#         vaccine_data = request.GET
+#         vaccine = Vaccine()
+#         patient = Patient.objects.get(user_id = vaccine_data['patient_id'])
+#         vaccine.patient = patient
+#         vaccine.name = vaccine_data['name']
+#         vaccine.date = vaccine_data['date']
+
+#         vaccine.save()
+#         return Response({'message': 'Vaccine created successfully.'})
+#     except KeyError as e:
+#         return Response({'error': f'Missing required field: {str(e)}'})
+#     except ValidationError as e:
+#         return Response({'error': str(e)})
+
+@api_view(['POST'])
 def createNewVaccine(request):
     try:
-        vaccine_data = request.GET
-        vaccine = Vaccine()
-        patient = Patient.objects.get(user_id = vaccine_data['patient_id'])
-        vaccine.patient = patient
-        vaccine.name = vaccine_data['name']
-        vaccine.date = vaccine_data['date']
-
-        vaccine.save()
+        data = request.data
+        patient = Patient.objects.get(user_id = data['patient_id'])
+        Vaccine.objects.create(
+            patient = patient,
+            name = data['name'],
+            date = data['date']
+        )
         return Response({'message': 'Vaccine created successfully.'})
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'})
@@ -311,22 +327,21 @@ def updateMedicalHistory(request):
     except ValidationError as e:
         return Response({'error': str(e)})
 
-@api_view(['GET'])
+@api_view(['POST'])
 def createAppointment(request):
     try:
-        appointment_data = request.GET
+        appointment_data = request.data
         print(appointment_data)
+
         patient_id = appointment_data['patient_id']
         doctor_id = appointment_data['doctor_id']
-        appointment = Appointment()
         patient = Patient.objects.get(user_id=patient_id)
         doctor = Doctor.objects.get(user_id=doctor_id)
-
-        appointment.patient = patient
-        appointment.doctor = doctor
-        appointment.datetime = appointment_data['datetime']
-
-        appointment.save()
+        Appointment.objects.create(
+            patient = patient,
+            doctor = doctor,
+            datetime = appointment_data['datetime']
+        )
         return Response({'message': 'Appointment created successfully.'})
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'})
