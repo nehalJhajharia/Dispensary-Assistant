@@ -179,7 +179,7 @@ def getAppointmentByDoctor(request):
 
 def getNewMyUser(request):
     try:
-        user_data = request.GET
+        user_data = request.data
         new_user = MyUser()
 
         for field in user_data:
@@ -193,8 +193,9 @@ def getNewMyUser(request):
     except ValidationError as e:
         return Response({'error': str(e)})
 
+@api_view(['POST'])
 def createDoctor(request):
-    doctor_data = request.GET
+    doctor_data = request.data
     user = getNewMyUser(request)
     if type(user) is MyUser:
         try:
@@ -217,7 +218,7 @@ def createDoctor(request):
         return user
 
 def getNewPatient(request):
-    patient_data = request.GET
+    patient_data = request.data
     user = getNewMyUser(request)
     if type(user) is MyUser:
         try:
@@ -239,8 +240,9 @@ def getNewPatient(request):
     else:
         return user
 
+@api_view(['POST'])
 def createStudent(request):
-    student_data = request.GET
+    student_data = request.data
     patient, user = getNewPatient(request)
     if type(patient) is Patient:
         try:
@@ -261,8 +263,9 @@ def createStudent(request):
     else:
         return patient
     
+@api_view(['POST'])
 def createStaff(request):
-    staff_data = request.GET
+    staff_data = request.data
     patient, user = getNewPatient(request)
     if type(patient) is Patient:
         try:
