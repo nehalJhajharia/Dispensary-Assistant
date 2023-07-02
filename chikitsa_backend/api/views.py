@@ -82,22 +82,6 @@ def getVaccines(request):
     vaccines_data = VaccineSerializer(vaccines, many=True).data
     return Response({'vaccines_data': vaccines_data})
 
-# def createNewVaccine(request):
-#     try:
-#         vaccine_data = request.GET
-#         vaccine = Vaccine()
-#         patient = Patient.objects.get(user_id = vaccine_data['patient_id'])
-#         vaccine.patient = patient
-#         vaccine.name = vaccine_data['name']
-#         vaccine.date = vaccine_data['date']
-
-#         vaccine.save()
-#         return Response({'message': 'Vaccine created successfully.'})
-#     except KeyError as e:
-#         return Response({'error': f'Missing required field: {str(e)}'})
-#     except ValidationError as e:
-#         return Response({'error': str(e)})
-
 @api_view(['POST'])
 def createNewVaccine(request):
     try:
@@ -113,10 +97,11 @@ def createNewVaccine(request):
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return Response({'error': str(e)})
-    
+
+@api_view(['POST'])
 def createNewTest(request):
     try:
-        test_data = request.GET
+        test_data = request.data
         test = Test()
         appointment = Appointment.objects.get(id=test_data['appointment_id'])
         test.appointment = appointment
