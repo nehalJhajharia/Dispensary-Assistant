@@ -147,9 +147,10 @@ def getAllMedicines(request):
     all_med_data = MedicineMasterSerializer(all_medicines, many=True).data
     return Response([{'all_med_data': all_med_data}])
 
+@api_view(['POST'])
 def createNewMedicine(request):
     try:
-        medicine_data = request.GET
+        medicine_data = request.data
         new_medicine = MedicineMaster()
         for field in medicine_data:
             if hasattr(new_medicine, field):
