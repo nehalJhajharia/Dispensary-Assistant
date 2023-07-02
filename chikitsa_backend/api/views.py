@@ -1,5 +1,3 @@
-from django.http import JsonResponse
-from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.core.exceptions import ValidationError
@@ -9,19 +7,20 @@ from .models import Vaccine, Test, MedicineMaster, Appointment
 from .serializers import MyUserSerializer, PatientSerializer, DoctorSerializer
 from .serializers import StudentSerializer, StaffSerializer, MedicalHistorySerializer
 from .serializers import VaccineSerializer, TestSerializer, MedicineMasterSerializer
-from .serializers import AppointmentSerializer, AllMedSerializer
+from .serializers import AppointmentSerializer
 
+@api_view(['GET'])
 def getMyUser(request):
     user_id = request.GET.get('id')
     user_data = getMyUserById(user_id)
-    return JsonResponse(user_data)
+    return Response(user_data)
 
 def getMyUserById(user_id):
     user = MyUser.objects.get(id = user_id)
     user_data = MyUserSerializer(user).data
 
     if (user_data['patient_or_doc']):
-        patient_data = getPatient(user_id)
+        patient_data = getPatient(user)
         user_data.update(patient_data)
 
         if (patient_data['staff_or_student']):
@@ -32,21 +31,22 @@ def getMyUserById(user_id):
             user_data.update(student_data)
 
     else:
-        doctor_data = getDoctor(user_id)
+        doctor_data = getDoctor(user)
         user_data.update(doctor_data)
 
     return user_data
 
-def getPatient(user_id):
-    patient = Patient.objects.get(user_id = user_id)
+def getPatient(user):
+    patient = Patient.objects.get(user = user)
     patient_data = PatientSerializer(patient).data
     return patient_data
 
-def getDoctor(user_id):
-    doctor = Doctor.objects.get(user_id = user_id)
+def getDoctor(user):
+    doctor = Doctor.objects.get(user = user)
     doctor_data = DoctorSerializer(doctor).data
     return doctor_data
 
+@api_view(['GET'])
 def getAllDoctors(request):
     all_doctors = Doctor.objects.all()
     all_doc_data = {}
@@ -56,29 +56,31 @@ def getAllDoctors(request):
         doc_data = getMyUserById(id)
         all_doc_data[f'{str(id)}'] = f'{str(doc_data)}'
 
-    return JsonResponse(all_doc_data)
+    return Response(all_doc_data)
 
 def getStudent(user_id):
-    student = Student.objects.get(patient_id = user_id)
+    student = Student.objects.get(patient = user_id)
     student_data = StudentSerializer(student).data
     return student_data
 
 def getStaff(user_id):
-    staff = Staff.objects.get(patient_id = user_id)
+    staff = Staff.objects.get(patient = user_id)
     staff_data = StaffSerializer(staff).data
     return staff_data
 
+@api_view(['GET'])
 def getMedicalHistory(request):
     patient = request.GET.get('patient_id')
     medical_history = MedicalHistory.objects.get(patient = patient)
     history_data = MedicalHistorySerializer(medical_history).data
-    return JsonResponse(history_data)
+    return Response(history_data)
 
+@api_view(['GET'])
 def getVaccines(request):
     patient = request.GET.get('patient_id')
     vaccines = Vaccine.objects.filter(patient_id = patient)
     vaccines_data = VaccineSerializer(vaccines, many=True).data
-    return JsonResponse({'vaccines_data': vaccines_data})
+    return Response({'vaccines_data': vaccines_data})
 
 def createNewVaccine(request):
     try:
@@ -90,11 +92,11 @@ def createNewVaccine(request):
         vaccine.date = vaccine_data['date']
 
         vaccine.save()
-        return JsonResponse({'message': 'Vaccine created successfully.'})
+        return Response({'message': 'Vaccine created successfully.'})
     except KeyError as e:
-        return JsonResponse({'error': f'Missing required field: {str(e)}'})
+        return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
-        return JsonResponse({'error': str(e)})
+        return Response({'error': str(e)})
     
 def createNewTest(request):
     try:
@@ -108,18 +110,20 @@ def createNewTest(request):
                     setattr(test, field, test_data[field])
 
         test.save()
-        return JsonResponse({'message': 'Test created successfully.'})
+        return Response({'message': 'Test created successfully.'})
     except KeyError as e:
-        return JsonResponse({'error': f'Missing required field: {str(e)}'})
+        return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
-        return JsonResponse({'error': str(e)})
+        return Response({'error': str(e)})
 
+@api_view(['GET'])
 def getTests(request):
     appointment_id = request.GET.get('appointment_id')
     tests = Test.objects.filter(appointment_id = appointment_id)
     tests_data = TestSerializer(tests, many=True).data
-    return JsonResponse({'tests_data': tests_data})
+    return Response({'tests_data': tests_data})
 
+@api_view(['GET'])
 def getAllTests(request):
     try:
         patient_id = request.GET.get('patient_id')
@@ -131,15 +135,15 @@ def getAllTests(request):
                 test_data = TestSerializer(test).data
                 all_tests_data[str(test.id)] = test_data
 
-        return JsonResponse(all_tests_data)
+        return Response(all_tests_data)
 
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        return Response({'error': str(e)}, status=500)
 
 @api_view(['GET'])
 def getAllMedicines(request):
     all_medicines = MedicineMaster.objects.all()
-    all_med_data = AllMedSerializer(all_medicines, many=True).data
+    all_med_data = MedicineMasterSerializer(all_medicines, many=True).data
     return Response([{'all_med_data': all_med_data}])
 
 def createNewMedicine(request):
@@ -151,23 +155,25 @@ def createNewMedicine(request):
                 setattr(new_medicine, field, medicine_data[field])
 
         new_medicine.save()
-        return JsonResponse({'message': 'Medicine created successfully.'})
+        return Response({'message': 'Medicine created successfully.'})
     except KeyError as e:
-        return JsonResponse({'error': f'Missing required field: {str(e)}'})
+        return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
-        return JsonResponse({'error': str(e)})
+        return Response({'error': str(e)})
 
+@api_view(['GET'])
 def getAppointmentByPatient(request):
     patient_id = request.GET.get('patient_id')
     appointments = Appointment.objects.filter(patient=patient_id)
     appointments_data = AppointmentSerializer(appointments, many=True).data
-    return JsonResponse({'appointments': appointments_data})
+    return Response({'appointments': appointments_data})
 
+@api_view(['GET'])
 def getAppointmentByDoctor(request):
     doctor_id = request.GET.get('doctor_id')
     appointments = Appointment.objects.filter(doctor=doctor_id)
     appointments_data = AppointmentSerializer(appointments, many=True).data
-    return JsonResponse({'appointments': appointments_data})
+    return Response({'appointments': appointments_data})
 
 def getNewMyUser(request):
     try:
@@ -181,9 +187,9 @@ def getNewMyUser(request):
         new_user.save()
         return new_user
     except KeyError as e:
-        return JsonResponse({'error': f'Missing required field: {str(e)}'})
+        return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
-        return JsonResponse({'error': str(e)})
+        return Response({'error': str(e)})
 
 def createDoctor(request):
     doctor_data = request.GET
@@ -198,13 +204,13 @@ def createDoctor(request):
                     setattr(new_doctor, field, doctor_data[field])
 
             new_doctor.save()
-            return JsonResponse({'message': 'Doctor created successfully'})
+            return Response({'message': 'Doctor created successfully'})
         except KeyError as e:
             user.delete()
-            return JsonResponse({'error': f'Missing required field: {str(e)}'})
+            return Response({'error': f'Missing required field: {str(e)}'})
         except ValidationError as e:
             user.delete()
-            return JsonResponse({'error': str(e)})
+            return Response({'error': str(e)})
     else:
         return user
 
@@ -224,10 +230,10 @@ def getNewPatient(request):
             return new_patient, user
         except KeyError as e:
             user.delete()
-            return JsonResponse({'error': f'Missing required field: {str(e)}'})
+            return Response({'error': f'Missing required field: {str(e)}'})
         except ValidationError as e:
             user.delete()
-            return JsonResponse({'error': str(e)})
+            return Response({'error': str(e)})
     else:
         return user
 
@@ -244,12 +250,12 @@ def createStudent(request):
                     setattr(new_student, field, student_data[field])
 
             new_student.save()
-            return JsonResponse({'message': 'Student created successfully'})
+            return Response({'message': 'Student created successfully'})
         except KeyError as e:
             user.delete()
-            return JsonResponse({'error': f'Missing required field: {str(e)}'})
+            return Response({'error': f'Missing required field: {str(e)}'})
         except ValidationError as e:
-            return JsonResponse({'error': str(e)})
+            return Response({'error': str(e)})
     else:
         return patient
     
@@ -266,12 +272,12 @@ def createStaff(request):
                     setattr(new_staff, field, staff_data[field])
 
             new_staff.save()
-            return JsonResponse({'message': 'Staff created successfully'})
+            return Response({'message': 'Staff created successfully'})
         except KeyError as e:
             user.delete()
-            return JsonResponse({'error': f'Missing required field: {str(e)}'})
+            return Response({'error': f'Missing required field: {str(e)}'})
         except ValidationError as e:
-            return JsonResponse({'error': str(e)})
+            return Response({'error': str(e)})
     else:
         return patient
 
@@ -281,7 +287,7 @@ def updateMedicalHistory(request):
     patient_exists = Patient.objects.filter(pk=patient_id).exists()
 
     if (patient_exists is False):
-        return JsonResponse({'message': 'Patient does not exist!!'})
+        return Response({'message': 'Patient does not exist!!'})
     
     try:
         patient = Patient.objects.get(user_id=patient_id)
@@ -299,11 +305,11 @@ def updateMedicalHistory(request):
                 setattr(med_hist, field, med_hist_data[field])
 
         med_hist.save()
-        return JsonResponse({'message': f'Medical history {operation}'})
+        return Response({'message': f'Medical history {operation}'})
     except KeyError as e:
-        return JsonResponse({'error': f'Missing required field: {str(e)}'})
+        return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
-        return JsonResponse({'error': str(e)})
+        return Response({'error': str(e)})
 
 @api_view(['GET'])
 def createAppointment(request):
