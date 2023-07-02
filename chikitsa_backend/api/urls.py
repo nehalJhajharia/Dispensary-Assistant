@@ -6,7 +6,7 @@ urlpatterns = [
     path('patient/create/student/', views.createStudent), # (all student details)
     path('patient/create/staff/', views.createStaff), # (all staff details)
     path('patient/get/medical-history/', views.getMedicalHistory), # (patient_id)
-    path('patient/update/medical-history/', views.updateMedicalHistory), # (patient_id)
+    path('patient/create/medical-history/', views.createMedicalHistory), # (patient_id)
     path('patient/get/vaccines/', views.getVaccines), # (patient_id)
     path('patient/create/vaccine/', views.createNewVaccine), # (patient_id, name, date)
     path('patient/get/tests/', views.getTests), # (appointment_id)

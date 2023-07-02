@@ -283,31 +283,25 @@ def createStaff(request):
     else:
         return patient
 
-def updateMedicalHistory(request):
-    med_hist_data = request.GET
-    patient_id = med_hist_data.get('patient_id')
-    patient_exists = Patient.objects.filter(pk=patient_id).exists()
-
-    if (patient_exists is False):
-        return Response({'message': 'Patient does not exist!!'})
-    
+@api_view(['POST'])
+def createMedicalHistory(request):
     try:
+        med_hist_data = request.data
+        patient_id = med_hist_data.get('patient_id')
+        
         patient = Patient.objects.get(user_id=patient_id)
         prev_med = MedicalHistory.objects.filter(patient=patient).exists()
-        med_hist = MedicalHistory()
-        operation = 'created'
         if prev_med:
-            operation = 'updated'
-            med_hist = MedicalHistory.objects.get(patient=patient)
+            return Response({'error': 'Medical history already exists!!'})
 
+        med_hist = MedicalHistory()
         med_hist.patient = patient
-
         for field in med_hist_data:
             if hasattr(med_hist, field):
                 setattr(med_hist, field, med_hist_data[field])
 
         med_hist.save()
-        return Response({'message': f'Medical history {operation}'})
+        return Response({'message': 'Medical history created successfully'})
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
