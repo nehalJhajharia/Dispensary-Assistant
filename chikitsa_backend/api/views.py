@@ -1,4 +1,7 @@
 from django.http import JsonResponse
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from django.core.exceptions import ValidationError
 from django.forms.models import model_to_dict
 from .models import MyUser, Patient, Doctor, Student, Staff, MedicalHistory
@@ -6,7 +9,7 @@ from .models import Vaccine, Test, MedicineMaster, Appointment
 from .serializers import MyUserSerializer, PatientSerializer, DoctorSerializer
 from .serializers import StudentSerializer, StaffSerializer, MedicalHistorySerializer
 from .serializers import VaccineSerializer, TestSerializer, MedicineMasterSerializer
-from .serializers import AppointmentSerializer
+from .serializers import AppointmentSerializer, AllMedSerializer
 
 def getMyUser(request):
     user_id = request.GET.get('id')
@@ -133,11 +136,11 @@ def getAllTests(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
-
+@api_view(['GET'])
 def getAllMedicines(request):
     all_medicines = MedicineMaster.objects.all()
-    all_med_data = MedicineMasterSerializer(all_medicines, many=True).data
-    return JsonResponse({'all_med_data': all_med_data})
+    all_med_data = AllMedSerializer(all_medicines, many=True).data
+    return Response([{'all_med_data': all_med_data}])
 
 def createNewMedicine(request):
     try:
@@ -158,14 +161,12 @@ def getAppointmentByPatient(request):
     patient_id = request.GET.get('patient_id')
     appointments = Appointment.objects.filter(patient=patient_id)
     appointments_data = AppointmentSerializer(appointments, many=True).data
-    print(appointments_data)
     return JsonResponse({'appointments': appointments_data})
 
 def getAppointmentByDoctor(request):
     doctor_id = request.GET.get('doctor_id')
     appointments = Appointment.objects.filter(doctor=doctor_id)
     appointments_data = AppointmentSerializer(appointments, many=True).data
-    print(appointments_data)
     return JsonResponse({'appointments': appointments_data})
 
 def getNewMyUser(request):
@@ -304,9 +305,11 @@ def updateMedicalHistory(request):
     except ValidationError as e:
         return JsonResponse({'error': str(e)})
 
+@api_view(['GET'])
 def createAppointment(request):
     try:
         appointment_data = request.GET
+        print(appointment_data)
         patient_id = appointment_data['patient_id']
         doctor_id = appointment_data['doctor_id']
         appointment = Appointment()
@@ -318,8 +321,8 @@ def createAppointment(request):
         appointment.datetime = appointment_data['datetime']
 
         appointment.save()
-        return JsonResponse({'message': 'Appointment created successfully.'})
+        return Response({'message': 'Appointment created successfully.'})
     except KeyError as e:
-        return JsonResponse({'error': f'Missing required field: {str(e)}'})
+        return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
-        return JsonResponse({'error': str(e)})
+        return Response({'error': str(e)})

@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import Patient, Doctor, Appointment
+from rest_framework.serializers import ModelSerializer
+from .models import Patient, Doctor, Appointment, MedicineMaster
+
+class AllMedSerializer(ModelSerializer):
+    class Meta:
+        model = MedicineMaster
+        fields = '__all__'
 
 class MyUserSerializer(serializers.Serializer):
     id = serializers.IntegerField()
