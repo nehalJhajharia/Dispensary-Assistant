@@ -49,7 +49,7 @@ class Staff(models.Model):
     employee_code = models.CharField(max_length=20)
 
 class MedicalHistory(models.Model):
-    patient = models.ForeignKey(Patient ,primary_key=False, on_delete=models.CASCADE, to_field='user_id')
+    patient = models.ForeignKey(Patient ,primary_key=False, on_delete=models.CASCADE)
     hypertension_self = models.BooleanField(default=False)
     hypertension_father = models.BooleanField(default=False)
     hypertension_mother = models.BooleanField(default=False)
@@ -61,7 +61,7 @@ class MedicalHistory(models.Model):
     allergic_medicine = models.CharField(max_length=200, default="nil")
     
 class Vaccine(models.Model):
-    patient = models.ForeignKey(Patient ,primary_key=False, on_delete=models.CASCADE, to_field='user_id')
+    patient = models.ForeignKey(Patient ,primary_key=False, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, null=False)
     date = models.DateField()
     
@@ -73,15 +73,15 @@ class MedicineMaster(models.Model):
     date_of_expiry = models.DateField()
 
 class Appointment(models.Model):
-    patient = models.ForeignKey(Patient, primary_key=False, on_delete=models.CASCADE, to_field='user_id')
-    doctor = models.ForeignKey(Doctor, primary_key=False, on_delete=models.CASCADE, to_field='user_id')
+    patient = models.ForeignKey(Patient, primary_key=False, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, primary_key=False, on_delete=models.CASCADE)
     datetime = models.DateTimeField()
     appointment_created_at = models.DateTimeField(auto_now_add=True)
     remarks = models.CharField(max_length=200, default="nil")
     diagnosis_duration_days = models.IntegerField(default=0)
 
 class Symptoms(models.Model):
-    appointment = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE, to_field='id')
+    appointment = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE)
     fever = models.IntegerField(default=0, validators=[minv(0), maxv(3)])
     recorded = models.BooleanField(default=False)
     continuous_fever = models.BooleanField(default=False)
@@ -110,15 +110,15 @@ class Symptoms(models.Model):
     other = models.CharField(max_length=200, default='nil')
 
 class Test(models.Model):
-    appointment = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE, to_field='id')
+    appointment = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, null=False)
     date = models.DateField()
     remarks = models.CharField(max_length=200, null=True, blank=True)
     image = models.ImageField(null=True, blank=True)
 
 class Medicine(models.Model):
-    appointment = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE, to_field='id')
-    medicine = models.ForeignKey(MedicineMaster, primary_key=False, on_delete=models.CASCADE, to_field='id')
+    appointment = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE)
+    medicine = models.ForeignKey(MedicineMaster, primary_key=False, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
     morning = models.BooleanField(default=False)

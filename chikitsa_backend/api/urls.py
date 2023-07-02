@@ -19,4 +19,5 @@ urlpatterns = [
     path('doctor/get/all-medicines/', views.getAllMedicines), # ()
     path('doctor/create/medicine/', views.createNewMedicine), # (all medicine details)
     path('doctor/get/all-doctors/', views.getAllDoctors), # ()
+    path('appointment/get/details/', views.getAppointmentDetails), # (appointment_id)
 ]
