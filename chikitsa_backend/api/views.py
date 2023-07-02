@@ -3,11 +3,11 @@ from rest_framework.decorators import api_view
 from django.core.exceptions import ValidationError
 from django.forms.models import model_to_dict
 from .models import MyUser, Patient, Doctor, Student, Staff, MedicalHistory
-from .models import Vaccine, Test, MedicineMaster, Appointment
+from .models import Vaccine, Test, MedicineMaster, Appointment, Symptoms, Medicine
 from .serializers import MyUserSerializer, PatientSerializer, DoctorSerializer
 from .serializers import StudentSerializer, StaffSerializer, MedicalHistorySerializer
 from .serializers import VaccineSerializer, TestSerializer, MedicineMasterSerializer
-from .serializers import AppointmentSerializer
+from .serializers import AppointmentSerializer, SymptomsSerializer, MedicineSerializer
 
 @api_view(['GET'])
 def getMyUser(request):
@@ -330,3 +330,25 @@ def createAppointment(request):
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return Response({'error': str(e)})
+
+def getSymptoms(appointment):
+    symptoms = Symptoms.objects.get(appointment=appointment)
+    return SymptomsSerializer(symptoms, many=False).data
+
+def getMedicines(appointment):
+    medicines = Medicine.objects.filter(appointment=appointment)
+    return MedicineSerializer(medicines, many=True).data
+
+def getTests(appointment):
+    tests = Test.objects.filter(appointment=appointment)
+    return TestSerializer(tests, many=True).data
+
+@api_view(['GET'])
+def getAppointmentDetails(request):
+    appointment_id = request.GET.get('appointment_id')
+    appointment = Appointment.objects.get(id=appointment_id)
+    details = AppointmentSerializer(appointment, many=False).data
+    details['symptoms'] = getSymptoms(appointment)
+    details['medicines'] = getMedicines(appointment)
+    details['tests'] = getTests(appointment)
+    return Response(details)
