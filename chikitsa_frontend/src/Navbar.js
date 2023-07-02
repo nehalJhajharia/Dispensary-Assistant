@@ -1,25 +1,57 @@
 import React from 'react';
 import './navbar.css';
 import { Link } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.css';
 
-const Navbar = ({ onPageChange }) => {
+const Navbar = ({ onPageChange, userType }) => {
   return (
-    <nav className="navbar">
-      <img src="https://images.unsplash.com/photo-1516876437184-593fda40c7ce?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGxvZ298ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=600&q=60" alt="logo"
-      height="40px" className="navbar-img"></img>
-      <button className="navbar-button" onClick={() => onPageChange('appointments')}>
-        Appointments
-      </button>
-      <button className="navbar-button" onClick={() => onPageChange('medicalHistory')}>
-        Medical History
-      </button>
-      <button className="navbar-button" onClick={() => onPageChange('vaccinationHistory')}>
-        Vaccination History
-      </button>
-      <button className="navbar-button" onClick={() => onPageChange('testList')}>
-        Test List
-      </button>
-      <Link to="/login" className='navbar-button'>logout</Link>
+    <nav className="navbar navbar-expand-lg bg-success navbar-dark">
+      <div className="container-fluid">
+        <a className='navbar-brand me-2'>
+          <img src='https://www.svnit.ac.in/conference/frsm2023/hit/svnit_logo.png' alt="logo"
+          height="40px" className="navbar-img"></img>
+        </a>
+        <a className='navbar-brand'>SVNIT Dispensary</a>
+
+        {/* toggle button */}
+        <button className="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <i className="fas fa-bars"></i>
+        </button>
+
+        {/* Collapsible wrapper */}
+        <div className="collapse navbar-collapse" id='navbarSupportedContent'>
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+          <li className="nav-item">
+              <a href="#" className="nav-link" onClick={() => onPageChange('profile')}>Profile</a>
+            </li>
+            <li className="nav-item">
+              <a href="#" className="nav-link" onClick={() => onPageChange('appointments')}>Appointments</a>
+            </li>
+            {userType ? (
+              <>
+              <li className="nav-item">
+                <a href="#" className="nav-link" onClick={() => onPageChange('medicalHistory')}>Medical History</a>
+              </li>
+              <li className="nav-item">
+                <a href="#" className="nav-link" onClick={() => onPageChange('vaccinationHistory')}>Vaccination History</a>
+              </li>
+              <li className="nav-item">
+                <a href="#" className="nav-link" onClick={() => onPageChange('testList')}>Test List</a>
+              </li>
+              </>
+            ) : (
+              <>
+              <li className="nav-item">
+                <a href="#" className="nav-link" onClick={() => onPageChange('all-medicine')}>All Medicines</a>
+              </li>
+              </>
+            )}
+            <li className="nav-item">
+              <Link to="/login" className='nav-link'>logout</Link>
+            </li>
+          </ul>
+        </div>
+      </div>
     </nav>
   );
 };
