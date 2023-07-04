@@ -82,25 +82,26 @@ def getVaccines(request):
     vaccines_data = VaccineSerializer(vaccines, many=True).data
     return Response({'vaccines_data': vaccines_data})
 
+@api_view(['POST'])
 def createNewVaccine(request):
     try:
-        vaccine_data = request.GET
-        vaccine = Vaccine()
-        patient = Patient.objects.get(user_id = vaccine_data['patient_id'])
-        vaccine.patient = patient
-        vaccine.name = vaccine_data['name']
-        vaccine.date = vaccine_data['date']
-
-        vaccine.save()
+        data = request.data
+        patient = Patient.objects.get(user_id = data['patient_id'])
+        Vaccine.objects.create(
+            patient = patient,
+            name = data['name'],
+            date = data['date']
+        )
         return Response({'message': 'Vaccine created successfully.'})
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return Response({'error': str(e)})
-    
+
+@api_view(['POST'])
 def createNewTest(request):
     try:
-        test_data = request.GET
+        test_data = request.data
         test = Test()
         appointment = Appointment.objects.get(id=test_data['appointment_id'])
         test.appointment = appointment
@@ -146,9 +147,10 @@ def getAllMedicines(request):
     all_med_data = MedicineMasterSerializer(all_medicines, many=True).data
     return Response([{'all_med_data': all_med_data}])
 
+@api_view(['POST'])
 def createNewMedicine(request):
     try:
-        medicine_data = request.GET
+        medicine_data = request.data
         new_medicine = MedicineMaster()
         for field in medicine_data:
             if hasattr(new_medicine, field):
@@ -177,7 +179,7 @@ def getAppointmentByDoctor(request):
 
 def getNewMyUser(request):
     try:
-        user_data = request.GET
+        user_data = request.data
         new_user = MyUser()
 
         for field in user_data:
@@ -191,8 +193,9 @@ def getNewMyUser(request):
     except ValidationError as e:
         return Response({'error': str(e)})
 
+@api_view(['POST'])
 def createDoctor(request):
-    doctor_data = request.GET
+    doctor_data = request.data
     user = getNewMyUser(request)
     if type(user) is MyUser:
         try:
@@ -215,7 +218,7 @@ def createDoctor(request):
         return user
 
 def getNewPatient(request):
-    patient_data = request.GET
+    patient_data = request.data
     user = getNewMyUser(request)
     if type(user) is MyUser:
         try:
@@ -237,8 +240,9 @@ def getNewPatient(request):
     else:
         return user
 
+@api_view(['POST'])
 def createStudent(request):
-    student_data = request.GET
+    student_data = request.data
     patient, user = getNewPatient(request)
     if type(patient) is Patient:
         try:
@@ -259,8 +263,9 @@ def createStudent(request):
     else:
         return patient
     
+@api_view(['POST'])
 def createStaff(request):
-    staff_data = request.GET
+    staff_data = request.data
     patient, user = getNewPatient(request)
     if type(patient) is Patient:
         try:
@@ -281,52 +286,45 @@ def createStaff(request):
     else:
         return patient
 
-def updateMedicalHistory(request):
-    med_hist_data = request.GET
-    patient_id = med_hist_data.get('patient_id')
-    patient_exists = Patient.objects.filter(pk=patient_id).exists()
-
-    if (patient_exists is False):
-        return Response({'message': 'Patient does not exist!!'})
-    
+@api_view(['POST'])
+def createMedicalHistory(request):
     try:
+        med_hist_data = request.data
+        patient_id = med_hist_data.get('patient_id')
+        
         patient = Patient.objects.get(user_id=patient_id)
         prev_med = MedicalHistory.objects.filter(patient=patient).exists()
-        med_hist = MedicalHistory()
-        operation = 'created'
         if prev_med:
-            operation = 'updated'
-            med_hist = MedicalHistory.objects.get(patient=patient)
+            return Response({'error': 'Medical history already exists!!'})
 
+        med_hist = MedicalHistory()
         med_hist.patient = patient
-
         for field in med_hist_data:
             if hasattr(med_hist, field):
                 setattr(med_hist, field, med_hist_data[field])
 
         med_hist.save()
-        return Response({'message': f'Medical history {operation}'})
+        return Response({'message': 'Medical history created successfully'})
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return Response({'error': str(e)})
 
-@api_view(['GET'])
+@api_view(['POST'])
 def createAppointment(request):
     try:
-        appointment_data = request.GET
+        appointment_data = request.data
         print(appointment_data)
+
         patient_id = appointment_data['patient_id']
         doctor_id = appointment_data['doctor_id']
-        appointment = Appointment()
         patient = Patient.objects.get(user_id=patient_id)
         doctor = Doctor.objects.get(user_id=doctor_id)
-
-        appointment.patient = patient
-        appointment.doctor = doctor
-        appointment.datetime = appointment_data['datetime']
-
-        appointment.save()
+        Appointment.objects.create(
+            patient = patient,
+            doctor = doctor,
+            datetime = appointment_data['datetime']
+        )
         return Response({'message': 'Appointment created successfully.'})
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'})
