@@ -9,6 +9,17 @@ from .serializers import StudentSerializer, StaffSerializer, MedicalHistorySeria
 from .serializers import VaccineSerializer, TestSerializer, MedicineMasterSerializer
 from .serializers import AppointmentSerializer, SymptomsSerializer, MedicineSerializer
 
+def convertBooleans(data):
+    new_data = {}
+    for field in data:
+        if data[field] == 'false':
+            new_data[field] = 'False'
+        elif data[field] == 'true':
+            new_data[field] = 'True'
+        else:
+            new_data[field] = data[field]
+    return new_data
+
 @api_view(['GET'])
 def getMyUser(request):
     user_id = request.GET.get('id')
@@ -312,7 +323,8 @@ def createMedicalHistory(request):
 @api_view(['POST'])
 def createAppointment(request):
     try:
-        data = request.data
+        data = convertBooleans(request.data)
+        # data = request.data
         patient_id = data['patient_id']
         doctor_id = data['doctor_id']
         patient = Patient.objects.get(user_id=patient_id)
@@ -323,7 +335,12 @@ def createAppointment(request):
             datetime = data['datetime']
         )
 
-        return createSymptoms(data, appointment)
+        symptoms_created, response = createSymptoms(data, appointment)
+        print(symptoms_created)
+        if not symptoms_created:
+            appointment.delete()
+        
+        return response
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
@@ -331,7 +348,7 @@ def createAppointment(request):
 
 def createSymptoms(data, appointment):
     try:
-        # data = request.data#['symptoms']
+        print(data)
         symptoms = Symptoms()
         symptoms.appointment = appointment
         for field in data:
@@ -339,13 +356,11 @@ def createSymptoms(data, appointment):
                 setattr(symptoms, field, data[field])
 
         symptoms.save()
-        return Response({'message': 'Appointment created successfully.'})
+        return True, Response({'message': 'Appointment created successfully.'})
     except KeyError as e:
-        appointment.delete()
-        return Response({'error': f'Missing required field: {str(e)}'})
+        return False, Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
-        appointment.delete()
-        return Response({'error': str(e)})
+        return False, Response({'error': str(e)})
 
 def getMedicines(appointment):
     medicines = Medicine.objects.filter(appointment=appointment)
