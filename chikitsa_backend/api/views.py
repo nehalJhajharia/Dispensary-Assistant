@@ -101,16 +101,16 @@ def createNewVaccine(request):
 @api_view(['POST'])
 def createNewTest(request):
     try:
-        test_data = request.data
-        test = Test()
-        appointment = Appointment.objects.get(id=test_data['appointment_id'])
-        test.appointment = appointment
+        data = request.data
+        appointment = Appointment.objects.get(id=data['appointment_id'])
 
-        for field in test_data:
-                if hasattr(test, field):
-                    setattr(test, field, test_data[field])
-
-        test.save()
+        Test.objects.create(
+            appointment = appointment,
+            name = data['name'],
+            date = data['date'],
+            remarks = data['remarks'],
+            image = data['image']
+        )
         return Response({'message': 'Test created successfully.'})
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'})
@@ -288,8 +288,8 @@ def createStaff(request):
 @api_view(['POST'])
 def createMedicalHistory(request):
     try:
-        med_hist_data = request.data
-        patient_id = med_hist_data.get('patient_id')
+        data = request.data
+        patient_id = data.get('patient_id')
         
         patient = Patient.objects.get(user_id=patient_id)
         prev_med = MedicalHistory.objects.filter(patient=patient).exists()
@@ -298,9 +298,9 @@ def createMedicalHistory(request):
 
         med_hist = MedicalHistory()
         med_hist.patient = patient
-        for field in med_hist_data:
+        for field in data:
             if hasattr(med_hist, field):
-                setattr(med_hist, field, med_hist_data[field])
+                setattr(med_hist, field, data[field])
 
         med_hist.save()
         return Response({'message': 'Medical history created successfully'})
@@ -312,27 +312,40 @@ def createMedicalHistory(request):
 @api_view(['POST'])
 def createAppointment(request):
     try:
-        appointment_data = request.data
-        print(appointment_data)
-
-        patient_id = appointment_data['patient_id']
-        doctor_id = appointment_data['doctor_id']
+        data = request.data
+        patient_id = data['patient_id']
+        doctor_id = data['doctor_id']
         patient = Patient.objects.get(user_id=patient_id)
         doctor = Doctor.objects.get(user_id=doctor_id)
-        Appointment.objects.create(
+        appointment = Appointment.objects.create(
             patient = patient,
             doctor = doctor,
-            datetime = appointment_data['datetime']
+            datetime = data['datetime']
         )
-        return Response({'message': 'Appointment created successfully.'})
+
+        return createSymptoms(data, appointment)
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return Response({'error': str(e)})
 
-def getSymptoms(appointment):
-    symptoms = Symptoms.objects.get(appointment=appointment)
-    return SymptomsSerializer(symptoms, many=False).data
+def createSymptoms(data, appointment):
+    try:
+        # data = request.data#['symptoms']
+        symptoms = Symptoms()
+        symptoms.appointment = appointment
+        for field in data:
+            if hasattr(symptoms, field):
+                setattr(symptoms, field, data[field])
+
+        symptoms.save()
+        return Response({'message': 'Appointment created successfully.'})
+    except KeyError as e:
+        appointment.delete()
+        return Response({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        appointment.delete()
+        return Response({'error': str(e)})
 
 def getMedicines(appointment):
     medicines = Medicine.objects.filter(appointment=appointment)
@@ -341,6 +354,10 @@ def getMedicines(appointment):
 def getTestsData(appointment):
     tests = Test.objects.filter(appointment=appointment)
     return TestSerializer(tests, many=True).data
+
+def getSymptoms(appointment):
+    symptoms = Symptoms.objects.get(appointment=appointment)
+    return SymptomsSerializer(symptoms, many=False).data
 
 @api_view(['GET'])
 def getAppointmentDetails(request):

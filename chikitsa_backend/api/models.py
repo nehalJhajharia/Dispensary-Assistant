@@ -83,7 +83,7 @@ class Appointment(models.Model):
 class Symptoms(models.Model):
     appointment = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE)
     fever = models.IntegerField(default=0, validators=[minv(0), maxv(3)])
-    recorded = models.BooleanField(default=False)
+    recorded = models.IntegerField(default=0, validators=[minv(0), maxv(200)])
     continuous_fever = models.BooleanField(default=False)
     intermittent_fever = models.BooleanField(default=False)
     shivering = models.BooleanField(default=False)
@@ -106,7 +106,7 @@ class Symptoms(models.Model):
     appetite = models.BooleanField(default=False)
     abdomen_pain = models.BooleanField(default=False)
     loose_motions = models.BooleanField(default=False)
-    urine_color = models.CharField(max_length=50, null=True, blank=True)
+    urine_color = models.CharField(max_length=50, null=True, blank=True, default='nil')
     other = models.CharField(max_length=200, default='nil')
 
 class Test(models.Model):
