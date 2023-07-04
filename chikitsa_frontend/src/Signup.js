@@ -103,82 +103,58 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container" style={{overflow:'auto', maxHeight:'100vh'}}>
       <h2>Signup</h2>
       <form onSubmit={handleSubmit}>
         <label htmlFor="first_name">First Name:</label>
-        <input
-          type="text"
-          id="first_name"
-          name="first_name"
-          value={firstName}
+        <input type="text" id="first_name" name="first_name" value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           required
         />
 
         <label htmlFor="middle_name">Middle Name:</label>
-        <input
-          type="text"
-          id="middle_name"
-          name="middle_name"
+        <input type="text" id="middle_name" name="middle_name"
           value={middleName}
           onChange={(e) => setMiddleName(e.target.value)}
         />
 
         <label htmlFor="last_name">Last Name:</label>
-        <input
-          type="text"
-          id="last_name"
-          name="last_name"
+        <input type="text" id="last_name" name="last_name"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           required
         />
 
         <label htmlFor="address">Address:</label>
-        <input
-          type="text"
-          id="address"
-          name="address"
+        <input type="text" id="address" name="address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           required
         />
 
         <label htmlFor="mobile_personal">Personal Mobile:</label>
-        <input
-          type="tel"
-          id="mobile_personal"
-          name="mobile_personal"
+        <input type="tel" id="mobile_personal" name="mobile_personal"
           value={mobilePersonal}
           onChange={(e) => setMobilePersonal(e.target.value)}
           required
         />
 
         <label htmlFor="mobile_emergency">Emergency Mobile:</label>
-        <input
-          type="tel"
-          id="mobile_emergency"
-          name="mobile_emergency"
+        <input type="tel" id="mobile_emergency" name="mobile_emergency"
           value={mobileEmergency}
           onChange={(e) => setMobileEmergency(e.target.value)}
           required
         />
 
         <label htmlFor="dob">Date of Birth:</label>
-        <input
-          type="date"
-          id="dob"
-          name="dob"
+        <input type="date" id="dob" name="dob"
           value={dob}
           onChange={(e) => setDob(e.target.value)}
           required
         />
 
         <label htmlFor="sex">Sex:</label>
-        <select
-          id="sex"
-          name="sex"
+        <select id="sex" name="sex"
           value={sex}
           onChange={(e) => setSex(e.target.value)}
           required
@@ -190,19 +166,14 @@ const SignupPage = () => {
         </select>
 
         <label htmlFor="blood_group">Blood Group:</label>
-        <input
-          type="text"
-          id="blood_group"
-          name="blood_group"
+        <input type="text" id="blood_group" name="blood_group"
           value={bloodGroup}
           onChange={(e) => setBloodGroup(e.target.value)}
           required
         />
 
         <label htmlFor="hypertension_self">Hypertension (Self):</label>
-        <select
-          id="hypertension_self"
-          name="hypertension_self"
+        <select id="hypertension_self" name="hypertension_self"
           value={hypertensionSelf}
           onChange={(e) => setHypertensionSelf(e.target.value === 'true')}
           required
@@ -213,9 +184,7 @@ const SignupPage = () => {
         </select>
 
         <label htmlFor="hypertension_father">Hypertension (Father):</label>
-        <select
-          id="hypertension_father"
-          name="hypertension_father"
+        <select id="hypertension_father" name="hypertension_father"
           value={hypertensionFather}
           onChange={(e) => setHypertensionFather(e.target.value === 'true')}
           required
@@ -226,9 +195,7 @@ const SignupPage = () => {
         </select>
 
         <label htmlFor="hypertension_mother">Hypertension (Mother):</label>
-        <select
-          id="hypertension_mother"
-          name="hypertension_mother"
+        <select id="hypertension_mother" name="hypertension_mother"
           value={hypertensionMother}
           onChange={(e) => setHypertensionMother(e.target.value === 'true')}
           required
@@ -239,10 +206,7 @@ const SignupPage = () => {
         </select>
 
         <label htmlFor="diabetes_self">Diabetes (Self):</label>
-        <select
-          id="diabetes_self"
-          name="diabetes_self"
-          value={diabetesSelf}
+        <select id="diabetes_self" name="diabetes_self" value={diabetesSelf}
           onChange={(e) => setDiabetesSelf(e.target.value === 'true')}
           required
         >
@@ -252,9 +216,7 @@ const SignupPage = () => {
         </select>
 
         <label htmlFor="diabetes_father">Diabetes (Father):</label>
-        <select
-          id="diabetes_father"
-          name="diabetes_father"
+        <select id="diabetes_father" name="diabetes_father"
           value={diabetesFather}
           onChange={(e) => setDiabetesFather(e.target.value === 'true')}
           required
@@ -265,9 +227,7 @@ const SignupPage = () => {
         </select>
 
         <label htmlFor="diabetes_mother">Diabetes (Mother):</label>
-        <select
-          id="diabetes_mother"
-          name="diabetes_mother"
+        <select id="diabetes_mother" name="diabetes_mother"
           value={diabetesMother}
           onChange={(e) => setDiabetesMother(e.target.value === 'true')}
           required
@@ -280,36 +240,27 @@ const SignupPage = () => {
         <label htmlFor="prev_operation_injury">
           Previous Operation/Injury:
         </label>
-        <input
-          type="text"
-          id="prev_operation_injury"
-          name="prev_operation_injury"
+        <input type="text" id="prev_operation_injury" name="prev_operation_injury"
           value={prevOperationInjury}
           onChange={(e) => setPrevOperationInjury(e.target.value)}
         />
 
         <label htmlFor="chronic_disease">Chronic Disease:</label>
-        <input
-          type="text"
-          id="chronic_disease"
+        <input type="text" id="chronic_disease"
           name="chronic_disease"
           value={chronicDisease}
           onChange={(e) => setChronicDisease(e.target.value)}
         />
 
         <label htmlFor="allergic_medicine">Allergic to Medicine:</label>
-        <input
-          type="text"
-          id="allergic_medicine"
+        <input type="text" id="allergic_medicine"
           name="allergic_medicine"
           value={allergicMedicine}
           onChange={(e) => setAllergicMedicine(e.target.value)}
         />
 
         <label htmlFor="staff_or_student">Are you a staff or a student?</label>
-        <select
-          id="staff_or_student"
-          name="staff_or_student"
+        <select id="staff_or_student" name="staff_or_student"
           value={isStaff}
           onChange={(e) => setIsStaff(e.target.value === 'true')}
           required
@@ -322,20 +273,14 @@ const SignupPage = () => {
         {isStaff && (
           <>
             <label htmlFor="staff_or_relative">Staff or Relative:</label>
-            <input
-              type="text"
-              id="staff_or_relative"
-              name="staff_or_relative"
+            <input type="text" id="staff_or_relative" name="staff_or_relative"
               value={staffOrRelative}
               onChange={(e) => setStaffOrRelative(e.target.value)}
               required
             />
 
             <label htmlFor="employee_code">Employee Code:</label>
-            <input
-              type="text"
-              id="employee_code"
-              name="employee_code"
+            <input type="text" id="employee_code" name="employee_code"
               value={employeeCode}
               onChange={(e) => setEmployeeCode(e.target.value)}
               required
@@ -346,9 +291,7 @@ const SignupPage = () => {
         {!isStaff && (
           <>
             <label htmlFor="course">Course:</label>
-            <select
-              id="course"
-              name="course"
+            <select id="course" name="course"
               value={course}
               onChange={(e) => setCourse(e.target.value)}
               required
@@ -361,70 +304,49 @@ const SignupPage = () => {
             </select>
 
             <label htmlFor="admission_num">Admission Number:</label>
-            <input
-              type="text"
-              id="admission_num"
-              name="admission_num"
+            <input type="text" id="admission_num" name="admission_num"
               value={admissionNum}
               onChange={(e) => setAdmissionNum(e.target.value)}
               required
             />
 
             <label htmlFor="hostel_num_and_name">Hostel Number and Name:</label>
-            <input
-              type="text"
-              id="hostel_num_and_name"
-              name="hostel_num_and_name"
+            <input type="text" id="hostel_num_and_name" name="hostel_num_and_name"
               value={hostelNumAndName}
               onChange={(e) => setHostelNumAndName(e.target.value)}
               required
             />
 
             <label htmlFor="room_num">Room Number:</label>
-            <input
-              type="text"
-              id="room_num"
-              name="room_num"
+            <input type="text" id="room_num" name="room_num"
               value={roomNum}
               onChange={(e) => setRoomNum(e.target.value)}
               required
             />
 
             <label htmlFor="father_occupation">Father's Occupation:</label>
-            <input
-              type="text"
-              id="father_occupation"
-              name="father_occupation"
+            <input type="text" id="father_occupation" name="father_occupation"
               value={fatherOccupation}
               onChange={(e) => setFatherOccupation(e.target.value)}
               required
             />
 
             <label htmlFor="mother_occupation">Mother's Occupation:</label>
-            <input
-              type="text"
-              id="mother_occupation"
-              name="mother_occupation"
+            <input type="text" id="mother_occupation" name="mother_occupation"
               value={motherOccupation}
               onChange={(e) => setMotherOccupation(e.target.value)}
               required
             />
 
             <label htmlFor="father_mobile">Father's Mobile:</label>
-            <input
-              type="tel"
-              id="father_mobile"
-              name="father_mobile"
+            <input type="tel" id="father_mobile" name="father_mobile"
               value={fatherMobile}
               onChange={(e) => setFatherMobile(e.target.value)}
               required
             />
 
             <label htmlFor="mother_mobile">Mother's Mobile:</label>
-            <input
-              type="tel"
-              id="mother_mobile"
-              name="mother_mobile"
+            <input type="tel" id="mother_mobile" name="mother_mobile"
               value={motherMobile}
               onChange={(e) => setMotherMobile(e.target.value)}
               required
