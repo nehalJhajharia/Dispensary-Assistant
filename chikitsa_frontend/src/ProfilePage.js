@@ -61,10 +61,10 @@ const ProfilePage = () => {
   return (
 <div>
 
-  <div class="container-fluid px-0">
-    <div class="row g-0">
+  <div className="container-fluid px-0">
+    <div className="row g-0">
     <Navbar onPageChange={handlePageChange} userType={profileData && profileData.patient_or_doc} />
-      <div class="col-lg-6 vh-100">
+      <div className="col-lg-6 vh-100">
       {renderPageContent()}
       </div>
 

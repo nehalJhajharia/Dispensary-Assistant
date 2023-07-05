@@ -108,218 +108,217 @@ return (
     </div>
 
     <h4>Symptoms:</h4>
-<div>
-  <label htmlFor="fever">Fever:</label>
-  <select id="fever" name="fever" value={fever} onChange={(e) => setFever(e.target.value)}>
-    <option value="1">Low</option>
-    <option value="2">Medium</option>
-    <option value="3">Strong</option>
-  </select>
-</div>
+    <div>
+      <label htmlFor="fever">Fever:</label>
+      <select id="fever" name="fever" value={fever} onChange={(e) => setFever(e.target.value)}>
+        <option value="1">Low</option>
+        <option value="2">Medium</option>
+        <option value="3">Strong</option>
+      </select>
+    </div>
 
-<div>
-  <label htmlFor="recorded">Recorded:</label>
-  <input type="number" id="recorded" name="recorded" min="0" max="200"
-    value={recorded}
-    onChange={(e) => setRecorded(e.target.value)}
-  />
-</div>
+    <div>
+      <label htmlFor="recorded">Recorded:</label>
+      <input type="number" id="recorded" name="recorded" min="0" max="200"
+        value={recorded}
+        onChange={(e) => setRecorded(e.target.value)}
+      />
+    </div>
 
-{/* radio button for fever type */}
-<div>
-  <label htmlFor="continuousFever">Fever Type:</label>
-  <div>
-    <input type="radio" id="continuousFever" name="feverType" value="continuous"
-      checked={continuousFever}
-      onChange={() => setContinuousFever(true)}
-    />
-    <label htmlFor="continuousFever">Continuous</label>
-  </div>
-  <div>
-    <input type="radio" id="intermittentFever" name="feverType" value="intermittent"
-      checked={intermittentFever}
-      onChange={() => setIntermittentFever(true)}
-    />
-    <label htmlFor="intermittentFever">Intermittent</label>
-  </div>
-</div>
+    {/* radio button for fever type */}
+    <div>
+      <label htmlFor="continuousFever">Fever Type:</label>
+      <div>
+        <input type="radio" id="continuousFever" name="feverType" value="continuous"
+          checked={continuousFever}
+          onChange={() => setContinuousFever(!continuousFever)}
+        />
+        <label htmlFor="continuousFever">Continuous</label>
+      </div>
+      <div>
+        <input type="radio" id="intermittentFever" name="feverType" value="intermittent"
+          checked={intermittentFever}
+          onChange={() => setIntermittentFever(!intermittentFever)}
+        />
+        <label htmlFor="intermittentFever">Intermittent</label>
+      </div>
+    </div>
 
-<div>
-  <label htmlFor="shivering">Shivering:</label>
-  <input type="checkbox" id="shivering" name="shivering"
-    checked={shivering}
-    onChange={() => setShivering(!shivering)}
-  />
-</div>
+    <div>
+      <label htmlFor="shivering">Shivering:</label>
+      <input type="checkbox" id="shivering" name="shivering"
+        checked={shivering}
+        onChange={() => setShivering(!shivering)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="vomiting">Vomiting:</label>
-  <input type="checkbox" id="vomiting" name="vomiting"
-    checked={vomiting}
-    onChange={() => setVomiting(!vomiting)}
-  />
-</div>
+    <div>
+      <label htmlFor="vomiting">Vomiting:</label>
+      <input type="checkbox" id="vomiting" name="vomiting"
+        checked={vomiting}
+        onChange={() => setVomiting(!vomiting)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="nausea">Nausea:</label>
-  <input type="checkbox" id="nausea" name="nausea" 
-    checked={nausea}
-    onChange={() => setNausea(!nausea)}
-  />
-</div>
+    <div>
+      <label htmlFor="nausea">Nausea:</label>
+      <input type="checkbox" id="nausea" name="nausea" 
+        checked={nausea}
+        onChange={() => setNausea(!nausea)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="headache">Headache:</label>
-  <input type="checkbox" id="headache" name="headache"
-    checked={headache}
-    onChange={() => setHeadache(!headache)}
-  />
-</div>
+    <div>
+      <label htmlFor="headache">Headache:</label>
+      <input type="checkbox" id="headache" name="headache"
+        checked={headache}
+        onChange={() => setHeadache(!headache)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="bodyPain">Body Pain:</label>
-  <input type="checkbox" id="bodyPain" name="bodyPain"
-    checked={bodyPain}
-    onChange={() => setBodyPain(!bodyPain)}
-  />
-</div>
+    <div>
+      <label htmlFor="bodyPain">Body Pain:</label>
+      <input type="checkbox" id="bodyPain" name="bodyPain"
+        checked={bodyPain}
+        onChange={() => setBodyPain(!bodyPain)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="jointPain">Joint Pain:</label>
-  <input type="checkbox" id="jointPain" name="jointPain"
-    checked={jointPain}
-    onChange={() => setJointPain(!jointPain)}
-  />
-</div>
+    <div>
+      <label htmlFor="jointPain">Joint Pain:</label>
+      <input type="checkbox" id="jointPain" name="jointPain"
+        checked={jointPain}
+        onChange={() => setJointPain(!jointPain)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="weakness">Weakness:</label>
-  <input type="checkbox" id="weakness" name="weakness"
-    checked={weakness}
-    onChange={() => setWeakness(!weakness)}
-  />
-</div>
+    <div>
+      <label htmlFor="weakness">Weakness:</label>
+      <input type="checkbox" id="weakness" name="weakness"
+        checked={weakness}
+        onChange={() => setWeakness(!weakness)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="cold">Cold:</label>
-  <input type="checkbox" id="cold" name="cold"
-    checked={cold}
-    onChange={() => setCold(!cold)}
-  />
-</div>
+    <div>
+      <label htmlFor="cold">Cold:</label>
+      <input type="checkbox" id="cold" name="cold"
+        checked={cold}
+        onChange={() => setCold(!cold)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="runnyNose">Runny Nose:</label>
-  <input type="checkbox" id="runnyNose" name="runnyNose"
-    checked={runnyNose}
-    onChange={() => setRunnyNose(!runnyNose)}
-  />
-</div>
+    <div>
+      <label htmlFor="runnyNose">Runny Nose:</label>
+      <input type="checkbox" id="runnyNose" name="runnyNose"
+        checked={runnyNose}
+        onChange={() => setRunnyNose(!runnyNose)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="sneezing">Sneezing:</label>
-  <input type="checkbox" id="sneezing" name="sneezing"
-    checked={sneezing}
-    onChange={() => setSneezing(!sneezing)}
-  />
-</div>
+    <div>
+      <label htmlFor="sneezing">Sneezing:</label>
+      <input type="checkbox" id="sneezing" name="sneezing"
+        checked={sneezing}
+        onChange={() => setSneezing(!sneezing)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="throatPain">Throat Pain:</label>
-  <input type="checkbox" id="throatPain" name="throatPain"
-    checked={throatPain}
-    onChange={() => setThroatPain(!throatPain)}
-  />
-</div>
+    <div>
+      <label htmlFor="throatPain">Throat Pain:</label>
+      <input type="checkbox" id="throatPain" name="throatPain"
+        checked={throatPain}
+        onChange={() => setThroatPain(!throatPain)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="earAche">Ear Ache:</label>
-  <input type="checkbox" id="earAche" name="earAche"
-    checked={earAche}
-    onChange={() => setEarAche(!earAche)}
-  />
-</div>
+    <div>
+      <label htmlFor="earAche">Ear Ache:</label>
+      <input type="checkbox" id="earAche" name="earAche"
+        checked={earAche}
+        onChange={() => setEarAche(!earAche)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="earDischarge">Ear Discharge:</label>
-  <input type="checkbox" id="earDischarge" name="earDischarge"
-    checked={earDischarge}
-    onChange={() => setEarDischarge(!earDischarge)}
-  />
-</div>
+    <div>
+      <label htmlFor="earDischarge">Ear Discharge:</label>
+      <input type="checkbox" id="earDischarge" name="earDischarge"
+        checked={earDischarge}
+        onChange={() => setEarDischarge(!earDischarge)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="cough">Cough:</label>
-  <input type="checkbox" id="cough" name="cough"
-    checked={cough}
-    onChange={() => setCough(!cough)}
-  />
-</div>
+    <div>
+      <label htmlFor="cough">Cough:</label>
+      <input type="checkbox" id="cough" name="cough"
+        checked={cough}
+        onChange={() => setCough(!cough)}
+      />
+    </div>
 
-<label htmlFor="coughType">Cough Type:</label>
-<div>
-  <input type="radio" id="dryCough" name="coughType" value="dry"
-    checked={dryCough}
-    onChange={() => setDryCough(true)}
-  />
-  <label htmlFor="dryCough">Dry Cough</label>
-</div>
-<div>
-  <input type="radio" id="wetCough" name="coughType" value="wet"
-    checked={wetCough}
-    onChange={() => setWetCough(true)}
-  />
-  <label htmlFor="wetCough">Wet Cough</label>
-</div>
+    <label htmlFor="coughType">Cough Type:</label>
+    <div>
+      <input type="radio" id="dryCough" name="coughType" value="dry"
+        checked={dryCough}
+        onChange={() => setDryCough(!dryCough)}
+      />
+      <label htmlFor="dryCough">Dry Cough</label>
+    </div>
+    <div>
+      <input type="radio" id="wetCough" name="coughType" value="wet"
+        checked={wetCough}
+        onChange={() => setWetCough(!wetCough)}
+      />
+      <label htmlFor="wetCough">Wet Cough</label>
+    </div>
 
-<div>
-  <label htmlFor="breathlessness">Breathlessness:</label>
-  <input type="checkbox" id="breathlessness" name="breathlessness"
-    checked={breathlessness}
-    onChange={() => setBreathlessness(!breathlessness)}
-  />
-</div>
+    <div>
+      <label htmlFor="breathlessness">Breathlessness:</label>
+      <input type="checkbox" id="breathlessness" name="breathlessness"
+        checked={breathlessness}
+        onChange={() => setBreathlessness(!breathlessness)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="appetite">Appetite:</label>
-  <input type="checkbox" id="appetite" name="appetite"
-    checked={appetite}
-    onChange={() => setAppetite(!appetite)}
-  />
-</div>
+    <div>
+      <label htmlFor="appetite">Appetite:</label>
+      <input type="checkbox" id="appetite" name="appetite"
+        checked={appetite}
+        onChange={() => setAppetite(!appetite)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="abdomenPain">Abdomen Pain:</label>
-  <input type="checkbox" id="abdomenPain" name="abdomenPain"
-    checked={abdomenPain}
-    onChange={() => setAbdomenPain(!abdomenPain)}
-  />
-</div>
+    <div>
+      <label htmlFor="abdomenPain">Abdomen Pain:</label>
+      <input type="checkbox" id="abdomenPain" name="abdomenPain"
+        checked={abdomenPain}
+        onChange={() => setAbdomenPain(!abdomenPain)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="looseMotions">Loose Motions:</label>
-  <input type="checkbox" id="looseMotions" name="looseMotions"
-    checked={looseMotions}
-    onChange={() => setLooseMotions(!looseMotions)}
-  />
-</div>
+    <div>
+      <label htmlFor="looseMotions">Loose Motions:</label>
+      <input type="checkbox" id="looseMotions" name="looseMotions"
+        checked={looseMotions}
+        onChange={() => setLooseMotions(!looseMotions)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="urineColor">Urine Color:</label>
-  <input type="text" id="urineColor" name="urineColor"
-    value={urineColor}
-    onChange={(e) => setUrineColor(e.target.value)}
-  />
-</div>
+    <div>
+      <label htmlFor="urineColor">Urine Color:</label>
+      <input type="text" id="urineColor" name="urineColor"
+        value={urineColor}
+        onChange={(e) => setUrineColor(e.target.value)}
+      />
+    </div>
 
-<div>
-  <label htmlFor="other">Other:</label>
-  <input type="text" id="other" name="other"
-    value={other}
-    onChange={(e) => setOther(e.target.value)}
-  />
-</div>
-
+    <div>
+      <label htmlFor="other">Other:</label>
+      <input type="text" id="other" name="other"
+        value={other}
+        onChange={(e) => setOther(e.target.value)}
+      />
+    </div>
     <button type="submit">Submit</button>
     </form>
   </div>

@@ -5,7 +5,7 @@ import './login.css';
 import { UserContext } from './context/UserContext';
 
 const Login = () => {
-  const [user_id, setUserId] = useState();
+  const [user_id, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();

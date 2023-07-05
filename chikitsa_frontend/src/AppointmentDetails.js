@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 
-const AppointmentDetails = ({ appointment_id }) => {
+const AppointmentDetails = ({ appointment }) => { 
+  const appointment_id = 101;
+  console.log(appointment);
   const [appointmentDetails, setAppointmentDetails] = useState(null);
   const url = 'http://192.168.193.8:8000/';
   const appointmentDetailsURL = url + `api/appointment/get/details/?appointment_id=${appointment_id}`;
 
   useEffect(() => {
     fetchAppointmentDetails();
-  }, []);
+  },[]);
 
   const fetchAppointmentDetails = async () => {
     try {
-      const response = await fetch(appointmentDetailsURL);
+      const response = await fetch(`${appointmentDetailsURL}`);
       if (response.ok) {
         const appointmentData = await response.json();
         setAppointmentDetails(appointmentData);
@@ -27,57 +29,43 @@ const AppointmentDetails = ({ appointment_id }) => {
     return <div>Loading appointment details...</div>;
   }
 
+
+  const renderValue = (value) => {
+    if (Array.isArray(value)) {
+      return (
+        <ul>
+          {value.map((item) => (
+            <li key={item.id}>{JSON.stringify(item)}</li>
+          ))}
+        </ul>
+      );
+    }
+
+    if (typeof value === 'object' && value !== null) {
+      return (
+        <ul>
+          {Object.entries(value).map(([key, val]) => (
+            <li key={key}>
+              <strong>{key}:</strong> {val}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+    return value;
+  };
+
   return (
-    <div>
+    <div style={{overflow:'auto', maxHeight:'100vh'}}>
       <h2>Appointment Details</h2>
       <table>
         <tbody>
-          <tr>
-            <td>ID:</td>
-            <td>{appointmentDetails.id}</td>
-          </tr>
-          <tr>
-            <td>Date and Time:</td>
-            <td>{appointmentDetails.datetime}</td>
-          </tr>
-          <tr>
-            <td>Appointment Created At:</td>
-            <td>{appointmentDetails.appointment_created_at}</td>
-          </tr>
-          <tr>
-            <td>Remarks:</td>
-            <td>{appointmentDetails.remarks}</td>
-          </tr>
-          <tr>
-            <td>Diagnosis Duration (Days):</td>
-            <td>{appointmentDetails.diagnosis_duration_days}</td>
-          </tr>
-          <tr>
-            <td>Patient ID:</td>
-            <td>{appointmentDetails.patient}</td>
-          </tr>
-          <tr>
-            <td>Doctor ID:</td>
-            <td>{appointmentDetails.doctor}</td>
-          </tr>
-          <tr>
-            <td>Symptoms:</td>
-            <td>{JSON.stringify(appointmentDetails.symptoms)}</td>
-          </tr>
-          <tr>
-            <td>Medicines:</td>
-            <td>{JSON.stringify(appointmentDetails.medicines)}</td>
-          </tr>
-          <tr>
-            <td>Tests:</td>
-            <td>
-              <ul>
-                {appointmentDetails.tests.map((test) => (
-                  <li key={test.id}>{test.name}</li>
-                ))}
-              </ul>
-            </td>
-          </tr>
+          {Object.entries(appointmentDetails).map(([key, value]) => (
+            <tr key={key}>
+              <td>{key}:</td>
+              <td>{renderValue(value)}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

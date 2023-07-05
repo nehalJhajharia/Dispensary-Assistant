@@ -53,14 +53,6 @@ const Appointments = ({ user_id, userType }) => {
         </thead>
         <tbody>
           {appointmentsList.map((appointment) => (
-            // <tr key={appointment.id}>
-            //   <td>{appointment.id}</td>
-            //   <td>{appointment.patient}</td>
-            //   <td>{appointment.doctor}</td>
-            //   <td>{formatDateTime(appointment.datetime)}</td>
-            //   <td>{appointment.remarks}</td>
-            //   <td>{appointment.diagnosis_duration_days}</td>
-            // </tr>
             <Appointment key={appointment.id} appointment={appointment} />
           ))}
         </tbody>
