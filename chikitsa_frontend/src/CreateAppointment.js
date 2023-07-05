@@ -33,46 +33,7 @@ const CreateAppointment = () => {
   const [looseMotions, setLooseMotions] = useState(false);
   const [urineColor, setUrineColor] = useState('');
   const [other, setOther] = useState('');
-
-  // const [ setSymptoms] = useState({
-  //   fever:0,
-  //   recorded:0,
-  //   continuous_fever:false,
-  //   intermittent_fever:false,
-  //   shivering:false,
-  //   vomiting:false,
-  //   nausea:false,
-  //   headache:false,
-  //   bodyPain: false,
-  //   jointPain: false,
-  //   weakness: false,
-  //   cold: false,
-  //   runnyNose: false,
-  //   sneezing: false,
-  //   throatPain: false,
-  //   earAche: false,
-  //   earDischarge: false,
-  //   cough: false,
-  //   dryCough: false,
-  //   wetCough: false,
-  //   breathlessness: false,
-  //   appetite: false,
-  //   abdomenPain: false,
-  //   looseMotions: false,
-  //   urineColor: '',
-  //   other:''
-  // })
-
-  // const handleSymptomsChange = (e) => {
-  //   const { name, value, type, checked } = e.target;
-  //   const convertedValue = name === 'fever' && type === 'select-one' ? parseInt(value, 10) : value;
-
-  //   setSymptoms((prevSymptoms) => ({
-  //     ...prevSymptoms,
-  //     [name]: type === 'checkbox' ? checked : convertedValue,
-  //   }));
-  // };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const doctorId = '1';
