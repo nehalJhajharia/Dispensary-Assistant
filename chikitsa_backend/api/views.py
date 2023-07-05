@@ -299,7 +299,7 @@ def createStaff(request):
 @api_view(['POST'])
 def createMedicalHistory(request):
     try:
-        data = request.data
+        data = convertBooleans(request.data)
         patient_id = data.get('patient_id')
         
         patient = Patient.objects.get(user_id=patient_id)
