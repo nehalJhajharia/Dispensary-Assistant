@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-const AppointmentDetails = ({ appointment }) => { 
-  const appointment_id = 101;
-  console.log(appointment);
+const AppointmentDetails = () => {
+  const {appointment_id} = useParams();
   const [appointmentDetails, setAppointmentDetails] = useState(null);
   const url = 'http://192.168.193.8:8000/';
   const appointmentDetailsURL = url + `api/appointment/get/details/?appointment_id=${appointment_id}`;
@@ -34,8 +34,8 @@ const AppointmentDetails = ({ appointment }) => {
     if (Array.isArray(value)) {
       return (
         <ul>
-          {value.map((item) => (
-            <li key={item.id}>{JSON.stringify(item)}</li>
+          {value.map((items) => (
+            <li key={items.id}>{JSON.stringify(items)}</li>
           ))}
         </ul>
       );
