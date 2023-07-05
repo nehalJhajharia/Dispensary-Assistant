@@ -1,11 +1,12 @@
 // TestList.js
 import React, { useState, useEffect } from 'react';
 import './testList.css';
+import { Link } from 'react-router-dom';
 
 function TestList({user_id}) {
   const [testList, setTestList] = useState([]);
   const url = 'http://192.168.193.8:8000/';
-  const testListUrl = url + 'api/patient/tests/?appointment_id=';
+  const testListUrl = url + 'api/patient/get/all-tests/?patient_id=';
 
   useEffect(() => {
     fetchTestList();
@@ -29,6 +30,7 @@ function TestList({user_id}) {
   return (
     <div className='test-container'>
       <h2>Test List</h2>
+      <Link to={`/create-test`} className='create-test-button'>Add Test</Link>
       <tbody>
         <tr>
           <th>ID</th>

@@ -57,8 +57,8 @@ const Appointments = ({ user_id, userType }) => {
           {appointmentsList.map((appointment) => (
             <tr key={appointment.id}>
               <td>{appointment.id}</td>
-              <td>{appointment.patient_id}</td>
-              <td>{appointment.doctor_id}</td>
+              <td>{appointment.patient}</td>
+              <td>{appointment.doctor}</td>
               <td>{formatDateTime(appointment.datetime)}</td>
               <td>{appointment.remarks}</td>
               <td>{appointment.diagnosis_duration_days}</td>

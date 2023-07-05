@@ -11,27 +11,24 @@ const CreateVaccine = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prepare the data
-    const patientId = user_id; 
-
     // Create an object with the vaccine data
-    const vaccineData = {
-      patient_id: patientId,
-      name: vaccineName,
-      date: date,
-    };
+    // const vaccineData = {
+    //   patient_id: user_id,
+    //   name: vaccineName,
+    //   date: date,
+    // };
+
+    const formData = new FormData();
+    formData.append('patient_id', user_id);
+    formData.append('name', vaccineName);
+    formData.append('date', date);
 
     // Send the data to the server
     try {
       const response = await fetch(`${user_uri}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(vaccineData),
+        body: formData,
       });
-
-      console.log(vaccineData);
 
       if (response.ok) {
         console.log('Vaccine created successfully');
