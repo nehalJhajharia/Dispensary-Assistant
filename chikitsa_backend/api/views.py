@@ -324,7 +324,6 @@ def createMedicalHistory(request):
 def createAppointment(request):
     try:
         data = convertBooleans(request.data)
-        # data = request.data
         patient_id = data['patient_id']
         doctor_id = data['doctor_id']
         patient = Patient.objects.get(user_id=patient_id)
@@ -348,7 +347,6 @@ def createAppointment(request):
 
 def createSymptoms(data, appointment):
     try:
-        print(data)
         symptoms = Symptoms()
         symptoms.appointment = appointment
         for field in data:
