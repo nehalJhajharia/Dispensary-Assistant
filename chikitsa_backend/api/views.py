@@ -3,11 +3,22 @@ from rest_framework.decorators import api_view
 from django.core.exceptions import ValidationError
 from django.forms.models import model_to_dict
 from .models import MyUser, Patient, Doctor, Student, Staff, MedicalHistory
-from .models import Vaccine, Test, MedicineMaster, Appointment
+from .models import Vaccine, Test, MedicineMaster, Appointment, Symptoms, Medicine
 from .serializers import MyUserSerializer, PatientSerializer, DoctorSerializer
 from .serializers import StudentSerializer, StaffSerializer, MedicalHistorySerializer
 from .serializers import VaccineSerializer, TestSerializer, MedicineMasterSerializer
-from .serializers import AppointmentSerializer
+from .serializers import AppointmentSerializer, SymptomsSerializer, MedicineSerializer
+
+def convertBooleans(data):
+    new_data = {}
+    for field in data:
+        if data[field] == 'false':
+            new_data[field] = 'False'
+        elif data[field] == 'true':
+            new_data[field] = 'True'
+        else:
+            new_data[field] = data[field]
+    return new_data
 
 @api_view(['GET'])
 def getMyUser(request):
@@ -101,16 +112,16 @@ def createNewVaccine(request):
 @api_view(['POST'])
 def createNewTest(request):
     try:
-        test_data = request.data
-        test = Test()
-        appointment = Appointment.objects.get(id=test_data['appointment_id'])
-        test.appointment = appointment
+        data = request.data
+        appointment = Appointment.objects.get(id=data['appointment_id'])
 
-        for field in test_data:
-                if hasattr(test, field):
-                    setattr(test, field, test_data[field])
-
-        test.save()
+        Test.objects.create(
+            appointment = appointment,
+            name = data['name'],
+            date = data['date'],
+            remarks = data['remarks'],
+            image = data['image']
+        )
         return Response({'message': 'Test created successfully.'})
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'})
@@ -120,23 +131,22 @@ def createNewTest(request):
 @api_view(['GET'])
 def getTests(request):
     appointment_id = request.GET.get('appointment_id')
-    tests = Test.objects.filter(appointment_id = appointment_id)
-    tests_data = TestSerializer(tests, many=True).data
-    return Response({'tests_data': tests_data})
+    appointment = Appointment.objects.get(id=appointment_id)
+    return Response({'tests_data': getTestsData(appointment)})
 
 @api_view(['GET'])
 def getAllTests(request):
     try:
         patient_id = request.GET.get('patient_id')
         all_appointments = Appointment.objects.filter(patient=patient_id)
-        all_tests_data = {}
+        all_tests_data = []
         for appointment in all_appointments:
             tests = Test.objects.filter(appointment=appointment)
             for test in tests:
                 test_data = TestSerializer(test).data
-                all_tests_data[str(test.id)] = test_data
+                all_tests_data.append(test_data)
 
-        return Response(all_tests_data)
+        return Response({'all_tests_data': all_tests_data})
 
     except Exception as e:
         return Response({'error': str(e)}, status=500)
@@ -289,8 +299,8 @@ def createStaff(request):
 @api_view(['POST'])
 def createMedicalHistory(request):
     try:
-        med_hist_data = request.data
-        patient_id = med_hist_data.get('patient_id')
+        data = convertBooleans(request.data)
+        patient_id = data.get('patient_id')
         
         patient = Patient.objects.get(user_id=patient_id)
         prev_med = MedicalHistory.objects.filter(patient=patient).exists()
@@ -299,9 +309,9 @@ def createMedicalHistory(request):
 
         med_hist = MedicalHistory()
         med_hist.patient = patient
-        for field in med_hist_data:
+        for field in data:
             if hasattr(med_hist, field):
-                setattr(med_hist, field, med_hist_data[field])
+                setattr(med_hist, field, data[field])
 
         med_hist.save()
         return Response({'message': 'Medical history created successfully'})
@@ -313,20 +323,61 @@ def createMedicalHistory(request):
 @api_view(['POST'])
 def createAppointment(request):
     try:
-        appointment_data = request.data
-        print(appointment_data)
-
-        patient_id = appointment_data['patient_id']
-        doctor_id = appointment_data['doctor_id']
+        data = convertBooleans(request.data)
+        patient_id = data['patient_id']
+        doctor_id = data['doctor_id']
         patient = Patient.objects.get(user_id=patient_id)
         doctor = Doctor.objects.get(user_id=doctor_id)
-        Appointment.objects.create(
+        appointment = Appointment.objects.create(
             patient = patient,
             doctor = doctor,
-            datetime = appointment_data['datetime']
+            datetime = data['datetime']
         )
-        return Response({'message': 'Appointment created successfully.'})
+
+        symptoms_created, response = createSymptoms(data, appointment)
+        print(symptoms_created)
+        if not symptoms_created:
+            appointment.delete()
+        
+        return response
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return Response({'error': str(e)})
+
+def createSymptoms(data, appointment):
+    try:
+        symptoms = Symptoms()
+        symptoms.appointment = appointment
+        for field in data:
+            if hasattr(symptoms, field):
+                setattr(symptoms, field, data[field])
+
+        symptoms.save()
+        return True, Response({'message': 'Appointment created successfully.'})
+    except KeyError as e:
+        return False, Response({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return False, Response({'error': str(e)})
+
+def getMedicines(appointment):
+    medicines = Medicine.objects.filter(appointment=appointment)
+    return MedicineSerializer(medicines, many=True).data
+
+def getTestsData(appointment):
+    tests = Test.objects.filter(appointment=appointment)
+    return TestSerializer(tests, many=True).data
+
+def getSymptoms(appointment):
+    symptoms = Symptoms.objects.get(appointment=appointment)
+    return SymptomsSerializer(symptoms, many=False).data
+
+@api_view(['GET'])
+def getAppointmentDetails(request):
+    appointment_id = request.GET.get('appointment_id')
+    appointment = Appointment.objects.get(id=appointment_id)
+    details = AppointmentSerializer(appointment, many=False).data
+    details['symptoms'] = getSymptoms(appointment)
+    details['medicines'] = getMedicines(appointment)
+    details['tests'] = getTestsData(appointment)
+    return Response(details)

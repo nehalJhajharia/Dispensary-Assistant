@@ -139,3 +139,10 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FormParser',
+    ],
+}
+
