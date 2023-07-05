@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './appointments.css';
+import Appointment from './Appointment';
 
 const Appointments = ({ user_id, userType }) => {
   const [appointmentsList, setAppointmentsList] = useState([]);
@@ -29,16 +30,12 @@ const Appointments = ({ user_id, userType }) => {
     }
   };
 
-  const formatDateTime = (dateTimeString) => {
-    const dateTime = new Date(dateTimeString);
-    return dateTime.toLocaleString();
-  };
 
   return (
     <div>
       <h2>Appointments</h2>
       {userType === true && (
-        <Link to={`/create-appointment`} className="create-appointment-button" >
+        <Link to={`/create-appointment`} >
           Create New Appointment
         </Link>      
       )}
@@ -51,18 +48,20 @@ const Appointments = ({ user_id, userType }) => {
             <th>Date and Time</th>
             <th>Remarks</th>
             <th>Diagnosis Duration (Days)</th>
+            <th>more</th>
           </tr>
         </thead>
         <tbody>
           {appointmentsList.map((appointment) => (
-            <tr key={appointment.id}>
-              <td>{appointment.id}</td>
-              <td>{appointment.patient}</td>
-              <td>{appointment.doctor}</td>
-              <td>{formatDateTime(appointment.datetime)}</td>
-              <td>{appointment.remarks}</td>
-              <td>{appointment.diagnosis_duration_days}</td>
-            </tr>
+            // <tr key={appointment.id}>
+            //   <td>{appointment.id}</td>
+            //   <td>{appointment.patient}</td>
+            //   <td>{appointment.doctor}</td>
+            //   <td>{formatDateTime(appointment.datetime)}</td>
+            //   <td>{appointment.remarks}</td>
+            //   <td>{appointment.diagnosis_duration_days}</td>
+            // </tr>
+            <Appointment key={appointment.id} appointment={appointment} />
           ))}
         </tbody>
       </table>
