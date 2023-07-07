@@ -93,41 +93,6 @@ def getVaccines(request):
     vaccines_data = VaccineSerializer(vaccines, many=True).data
     return Response({'vaccines_data': vaccines_data})
 
-@api_view(['POST'])
-def createNewVaccine(request):
-    try:
-        data = request.data
-        patient = Patient.objects.get(user_id = data['patient_id'])
-        Vaccine.objects.create(
-            patient = patient,
-            name = data['name'],
-            date = data['date']
-        )
-        return Response({'message': 'Vaccine created successfully.'})
-    except KeyError as e:
-        return Response({'error': f'Missing required field: {str(e)}'})
-    except ValidationError as e:
-        return Response({'error': str(e)})
-
-@api_view(['POST'])
-def createNewTest(request):
-    try:
-        data = request.data
-        appointment = Appointment.objects.get(id=data['appointment_id'])
-
-        Test.objects.create(
-            appointment = appointment,
-            name = data['name'],
-            date = data['date'],
-            remarks = data['remarks'],
-            image = data['image']
-        )
-        return Response({'message': 'Test created successfully.'})
-    except KeyError as e:
-        return Response({'error': f'Missing required field: {str(e)}'})
-    except ValidationError as e:
-        return Response({'error': str(e)})
-
 @api_view(['GET'])
 def getTests(request):
     appointment_id = request.GET.get('appointment_id')
@@ -157,6 +122,77 @@ def getAllMedicines(request):
     all_med_data = MedicineMasterSerializer(all_medicines, many=True).data
     return Response([{'all_med_data': all_med_data}])
 
+@api_view(['GET'])
+def getAppointmentByPatient(request):
+    patient_id = request.GET.get('patient_id')
+    appointments = Appointment.objects.filter(patient=patient_id)
+    appointments_data = AppointmentSerializer(appointments, many=True).data
+    return Response({'appointments': appointments_data})
+
+@api_view(['GET'])
+def getAppointmentByDoctor(request):
+    doctor_id = request.GET.get('doctor_id')
+    appointments = Appointment.objects.filter(doctor=doctor_id)
+    appointments_data = AppointmentSerializer(appointments, many=True).data
+    return Response({'appointments': appointments_data})
+
+def getMedicines(appointment):
+    medicines = Medicine.objects.filter(appointment=appointment)
+    return MedicineSerializer(medicines, many=True).data
+
+def getTestsData(appointment):
+    tests = Test.objects.filter(appointment=appointment)
+    return TestSerializer(tests, many=True).data
+
+def getSymptoms(appointment):
+    symptoms = Symptoms.objects.get(appointment=appointment)
+    return SymptomsSerializer(symptoms, many=False).data
+
+@api_view(['GET'])
+def getAppointmentDetails(request):
+    appointment_id = request.GET.get('appointment_id')
+    appointment = Appointment.objects.get(id=appointment_id)
+    details = AppointmentSerializer(appointment, many=False).data
+    details['symptoms'] = getSymptoms(appointment)
+    details['medicines'] = getMedicines(appointment)
+    details['tests'] = getTestsData(appointment)
+    return Response(details)
+
+@api_view(['POST'])
+def createNewVaccine(request):
+    try:
+        data = request.data
+        patient = Patient.objects.get(user_id = data['patient_id'])
+        Vaccine.objects.create(
+            patient = patient,
+            name = data['name'],
+            date = data['date']
+        )
+        return Response({'message': 'Vaccine created successfully.'})
+    except KeyError as e:
+        return Response({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return Response({'error': str(e)})
+    
+@api_view(['POST'])
+def createNewTest(request):
+    try:
+        data = request.data
+        appointment = Appointment.objects.get(id=data['appointment_id'])
+
+        Test.objects.create(
+            appointment = appointment,
+            name = data['name'],
+            date = data['date'],
+            remarks = data['remarks'],
+            image = data['image']
+        )
+        return Response({'message': 'Test created successfully.'})
+    except KeyError as e:
+        return Response({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return Response({'error': str(e)})
+    
 @api_view(['POST'])
 def createNewMedicine(request):
     try:
@@ -172,21 +208,7 @@ def createNewMedicine(request):
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return Response({'error': str(e)})
-
-@api_view(['GET'])
-def getAppointmentByPatient(request):
-    patient_id = request.GET.get('patient_id')
-    appointments = Appointment.objects.filter(patient=patient_id)
-    appointments_data = AppointmentSerializer(appointments, many=True).data
-    return Response({'appointments': appointments_data})
-
-@api_view(['GET'])
-def getAppointmentByDoctor(request):
-    doctor_id = request.GET.get('doctor_id')
-    appointments = Appointment.objects.filter(doctor=doctor_id)
-    appointments_data = AppointmentSerializer(appointments, many=True).data
-    return Response({'appointments': appointments_data})
-
+    
 def getNewMyUser(request):
     try:
         user_data = request.data
@@ -335,7 +357,6 @@ def createAppointment(request):
         )
 
         symptoms_created, response = createSymptoms(data, appointment)
-        print(symptoms_created)
         if not symptoms_created:
             appointment.delete()
         
@@ -359,25 +380,3 @@ def createSymptoms(data, appointment):
         return False, Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return False, Response({'error': str(e)})
-
-def getMedicines(appointment):
-    medicines = Medicine.objects.filter(appointment=appointment)
-    return MedicineSerializer(medicines, many=True).data
-
-def getTestsData(appointment):
-    tests = Test.objects.filter(appointment=appointment)
-    return TestSerializer(tests, many=True).data
-
-def getSymptoms(appointment):
-    symptoms = Symptoms.objects.get(appointment=appointment)
-    return SymptomsSerializer(symptoms, many=False).data
-
-@api_view(['GET'])
-def getAppointmentDetails(request):
-    appointment_id = request.GET.get('appointment_id')
-    appointment = Appointment.objects.get(id=appointment_id)
-    details = AppointmentSerializer(appointment, many=False).data
-    details['symptoms'] = getSymptoms(appointment)
-    details['medicines'] = getMedicines(appointment)
-    details['tests'] = getTestsData(appointment)
-    return Response(details)

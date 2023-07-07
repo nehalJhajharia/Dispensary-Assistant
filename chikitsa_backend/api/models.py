@@ -77,6 +77,7 @@ class Appointment(models.Model):
     doctor = models.ForeignKey(Doctor, primary_key=False, on_delete=models.CASCADE)
     datetime = models.DateTimeField()
     appointment_created_at = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(default=0, validators=[minv(-1), maxv(1)])
     remarks = models.CharField(max_length=200, default="nil")
     diagnosis_duration_days = models.IntegerField(default=0)
 
