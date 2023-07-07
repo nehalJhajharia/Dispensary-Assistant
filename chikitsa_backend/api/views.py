@@ -20,6 +20,8 @@ def convertBooleans(data):
             new_data[field] = data[field]
     return new_data
 
+####################### GET #######################
+
 @api_view(['GET'])
 def getMyUser(request):
     user_id = request.GET.get('id')
@@ -157,6 +159,8 @@ def getAppointmentDetails(request):
     details['medicines'] = getMedicines(appointment)
     details['tests'] = getTestsData(appointment)
     return Response(details)
+
+####################### POST #######################
 
 @api_view(['POST'])
 def createNewVaccine(request):
@@ -380,3 +384,48 @@ def createSymptoms(data, appointment):
         return False, Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return False, Response({'error': str(e)})
+
+####################### PUT #######################
+
+def checkStatus(status):
+    if status < -1 or status > 2:
+        return False
+    return True
+
+@api_view(['PUT'])  
+def updateAppointmentStatus(request):
+    try:
+        data = request.data
+        status = int(data['status'])
+        if not checkStatus(status):
+            return Response({'error': 'status can be -1, 0, 1, 2 only'})
+        
+        appointment_id = data['appointment_id']
+        print(data)
+        appointment = Appointment.objects.get(id = appointment_id)
+        appointment.status = int(data['status'])
+        appointment.save()
+
+        return Response({'message': 'Appointment updated successfully.'})
+    except KeyError as e:
+        return Response({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return Response({'error': str(e)})
+    
+@api_view(['PUT'])  
+def updateSymptoms(request):
+    try:
+        data = convertBooleans(request.data)
+        symptoms_id = data['symptoms_id']
+        print(data)
+        symptoms = Symptoms.objects.get(id = symptoms_id)
+        for field in data:
+            if hasattr(symptoms, field):
+                setattr(symptoms, field, data[field])
+
+        symptoms.save()
+        return Response({'message': 'Symptoms updated successfully.'})
+    except KeyError as e:
+        return Response({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return Response({'error': str(e)})
