@@ -445,19 +445,19 @@ def updateSymptoms(request):
     except ValidationError as e:
         return Response({'error': str(e)})
     
-# @api_view(['PUT'])  
-# def updateTest(request):
-#     try:
-#         data = convertBooleans(request.data)
-#         symptoms_id = data['symptoms_id']
-#         symptoms = Symptoms.objects.get(id = symptoms_id)
-#         for field in data:
-#             if hasattr(symptoms, field):
-#                 setattr(symptoms, field, data[field])
+@api_view(['PUT'])  
+def updateTest(request):
+    try:
+        data = convertBooleans(request.data)
+        test_id = data['test_id']
+        test = Test.objects.get(id = test_id)
+        for field in data:
+            if hasattr(test, field):
+                setattr(test, field, data[field])
 
-#         symptoms.save()
-#         return Response({'message': 'Symptoms updated successfully.'})
-#     except KeyError as e:
-#         return Response({'error': f'Missing required field: {str(e)}'})
-#     except ValidationError as e:
-#         return Response({'error': str(e)})
+        test.save()
+        return Response({'message': 'Test updated successfully.'})
+    except KeyError as e:
+        return Response({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return Response({'error': str(e)})

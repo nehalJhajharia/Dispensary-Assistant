@@ -26,4 +26,5 @@ urlpatterns = [
     path('master/create/medicine/', views.createNewMedicineMater), # (medicine details)
     path('master/create/test/', views.createNewMedicineMater), # (test details)
     path('master/create/vaccine/', views.createNewMedicineMater), # (vaccine details)
+    path('update/test/', views.updateTest) # (test_id, test details)
 ]
