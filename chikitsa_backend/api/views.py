@@ -461,3 +461,20 @@ def updateTest(request):
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return Response({'error': str(e)})
+    
+@api_view(['PUT'])  
+def updateVaccine(request):
+    try:
+        data = convertBooleans(request.data)
+        vaccine_id = data['vaccine_id']
+        vaccine = Vaccine.objects.get(id = vaccine_id)
+        for field in data:
+            if hasattr(vaccine, field):
+                setattr(vaccine, field, data[field])
+
+        vaccine.save()
+        return Response({'message': 'Vaccine updated successfully.'})
+    except KeyError as e:
+        return Response({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return Response({'error': str(e)})
