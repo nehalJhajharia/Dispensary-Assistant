@@ -1,10 +1,11 @@
 //MedicalHistory
-import React, { useState, useEffect } from 'react';
-import './medicalHistory.css'
+import React, { useState, useEffect, useContext } from 'react';
+import './medicalHistory.css';
+import UrlContext from './context/UrlContext';
 
 function MedicalHistory ({user_id}) {
   const [medicalData, setMedicalData] = useState([]);
-  const url = 'http://192.168.199.8:8000/';
+  const {url} = useContext(UrlContext);
   const user_uri = url + 'api/patient/get/medical-history/?patient_id=';
 
   useEffect(() => {

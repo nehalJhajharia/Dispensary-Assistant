@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import UrlContext from './context/UrlContext';
 
 const AppointmentDetails = () => {
   const { appointment_id } = useParams();
   const [appointmentDetails, setAppointmentDetails] = useState(null);
-  const url = 'http://192.168.199.8:8000/';
+  const {url} = useContext(UrlContext);
   const appointmentDetailsURL = url + `api/appointment/get/details/?appointment_id=${appointment_id}`;
 
   useEffect(() => {

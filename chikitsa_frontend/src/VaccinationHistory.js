@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './vaccinationHistory.css';
 import { Link } from 'react-router-dom';
+import UrlContext from './context/UrlContext';
 
 const VaccinationHistory = ({ user_id }) => {
   const [vaccinationHistoryEntries, setVaccinationHistoryEntries] = useState([]);
-  const url = 'http://192.168.199.8:8000/';
+  const {url} = useContext(UrlContext);
   const user_uri = url + 'api/patient/get/vaccines/?patient_id=';
 
   useEffect(() => {

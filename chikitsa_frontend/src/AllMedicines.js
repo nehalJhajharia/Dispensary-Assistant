@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import UrlContext from './context/UrlContext';
 
 const AllMedicines = () => {
   const [medicineList, setMedicineList] = useState([]);
-  const url = 'http://192.168.199.8:8000/';
+  const {url} = useContext(UrlContext)
   const user_uri = url + 'api/doctor/get/all-medicines/';
 
   useEffect(() => {

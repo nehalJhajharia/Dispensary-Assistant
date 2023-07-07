@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { UserContext } from './context/UserContext';
+import UrlContext from './context/UrlContext';
 
 const CreateVaccine = () => {
   const [vaccineName, setVaccineName] = useState('');
   const [date, setDate] = useState('');
-  const url = 'http://192.168.199.8:8000/';
+  const {url} = useContext(UrlContext);
   const user_uri = url + 'api/patient/create/vaccine/';
   const { user_id } = useContext(UserContext); 
 

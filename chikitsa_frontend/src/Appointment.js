@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import UrlContext from './context/UrlContext';
 
 const Appointment = ({ appointment , userType}) => {
   const appointment_id = appointment.id;
   const [status, setStatus]  = useState(appointment.status);
-  const url = 'http://192.168.199.8:8000/';
+  const {url} = useContext(UrlContext);
   const user_uri = url + 'api/doctor/update/appointment-status/';
 
   

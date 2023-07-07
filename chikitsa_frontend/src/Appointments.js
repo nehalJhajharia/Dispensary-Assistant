@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import './appointments.css';
 import Appointment from './Appointment';
+import UrlContext from './context/UrlContext';
 
 const Appointments = ({ user_id, userType }) => {
   const [appointmentsList, setAppointmentsList] = useState([]);
-  const url = 'http://192.168.199.8:8000/';
+  const {url} = useContext(UrlContext);
   const patientAppointmentsURL = url + 'api/patient/get/appointments/?patient_id=';
   const doctorAppointmentsURL = url + 'api/doctor/get/appointments/?doctor_id=';
 

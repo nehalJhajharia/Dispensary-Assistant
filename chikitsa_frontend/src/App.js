@@ -10,11 +10,13 @@ import SignupPage from './Signup';
 import CreateVaccine from './CreateVaccine';
 import CreateTest from './CreateTest';
 import AppointmentDetails from './AppointmentDetails';
+import { UrlProvider } from './context/UrlContext';
 
 function App() {
   return (
     <>
     <UserProvider>
+    <UrlProvider>
     <Router>
       <div>
         <Routes>
@@ -29,6 +31,7 @@ function App() {
         </Routes>
       </div>
     </Router>
+    </UrlProvider>
     </UserProvider>
     </>
   );
