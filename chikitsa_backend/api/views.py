@@ -478,3 +478,23 @@ def updateVaccine(request):
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return Response({'error': str(e)})
+
+@api_view(['PUT'])  
+def updateMedicalHistory(request):
+    try:
+        data = convertBooleans(request.data)
+        
+        if not MedicalHistory.objects.filter(id = data['med_hist_id']).exists:
+            return Response({'error': 'Medical history does not exist!!'})
+
+        hist = MedicalHistory.objects.get(id = data['med_hist_id'])
+        for field in data:
+            if hasattr(hist, field):
+                setattr(hist, field, data[field])
+
+        hist.save()
+        return Response({'message': 'Medical history updated successfully'})
+    except KeyError as e:
+        return Response({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return Response({'error': str(e)})   
