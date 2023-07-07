@@ -72,11 +72,18 @@ class MedicineMaster(models.Model):
     date_of_mfg = models.DateField()
     date_of_expiry = models.DateField()
 
+# status = {
+# -1 : rejected
+#  0 : not_confirmed
+#  1 : confirmed_pending
+#  2 : completed
+# }
 class Appointment(models.Model):
     patient = models.ForeignKey(Patient, primary_key=False, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Doctor, primary_key=False, on_delete=models.CASCADE)
     datetime = models.DateTimeField()
     appointment_created_at = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(default=0, validators=[minv(-1), maxv(2)])
     remarks = models.CharField(max_length=200, default="nil")
     diagnosis_duration_days = models.IntegerField(default=0)
 
