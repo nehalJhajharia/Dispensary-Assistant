@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const AllMedicines = () => {
   const [medicineList, setMedicineList] = useState([]);
-  const url = 'http://192.168.193.8:8000/';
+  const url = 'http://192.168.199.8:8000/';
   const user_uri = url + 'api/doctor/get/all-medicines/';
 
   useEffect(() => {

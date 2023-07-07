@@ -4,7 +4,7 @@ import './medicalHistory.css'
 
 function MedicalHistory ({user_id}) {
   const [medicalData, setMedicalData] = useState([]);
-  const url = 'http://192.168.193.8:8000/';
+  const url = 'http://192.168.199.8:8000/';
   const user_uri = url + 'api/patient/get/medical-history/?patient_id=';
 
   useEffect(() => {

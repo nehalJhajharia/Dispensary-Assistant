@@ -4,7 +4,7 @@ import { UserContext } from './context/UserContext';
 const CreateVaccine = () => {
   const [vaccineName, setVaccineName] = useState('');
   const [date, setDate] = useState('');
-  const url = 'http://192.168.193.8:8000/';
+  const url = 'http://192.168.199.8:8000/';
   const user_uri = url + 'api/patient/create/vaccine/';
   const { user_id } = useContext(UserContext); 
 

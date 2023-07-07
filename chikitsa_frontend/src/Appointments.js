@@ -5,7 +5,7 @@ import Appointment from './Appointment';
 
 const Appointments = ({ user_id, userType }) => {
   const [appointmentsList, setAppointmentsList] = useState([]);
-  const url = 'http://192.168.193.8:8000/';
+  const url = 'http://192.168.199.8:8000/';
   const patientAppointmentsURL = url + 'api/patient/get/appointments/?patient_id=';
   const doctorAppointmentsURL = url + 'api/doctor/get/appointments/?doctor_id=';
 
@@ -48,12 +48,13 @@ const Appointments = ({ user_id, userType }) => {
             <th>Date and Time</th>
             <th>Remarks</th>
             <th>Diagnosis Duration (Days)</th>
-            <th>more</th>
+            <th>Status</th>
+            <th>More</th>
           </tr>
         </thead>
         <tbody>
           {appointmentsList.map((appointment) => (
-            <Appointment key={appointment.id} appointment={appointment} />
+            <Appointment key={appointment.id} appointment={appointment} userType={userType}/>
           ))}
         </tbody>
       </table>

@@ -1,13 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const Appointment = ({ appointment }) => {
+const Appointment = ({ appointment , userType}) => {
   const appointment_id = appointment.id;
+  const [status, setStatus]  = useState(appointment.status);
+  const url = 'http://192.168.199.8:8000/';
+  const user_uri = url + 'api/doctor/update/appointment-status/';
 
   
   const formatDateTime = (dateTimeString) => {
     const dateTime = new Date(dateTimeString);
     return dateTime.toLocaleString();
+  };
+
+  const getStatusString = (status) => {
+    if(status === -1){
+      return 'Rejected';
+    }else if(status === 0){
+      return 'Pending';
+    }else if(status === 1){
+      return 'Confirmed';
+    }else if(status === 2){
+      return 'Completed';
+    }else{
+      return 'Unknown';
+    }
+  };
+
+  const updateAppointmentStatus = async (status) => {
+    const formData = new FormData();
+    formData.append('appointment_id', appointment_id);
+    formData.append('status', status);
+    try {
+      const response = await fetch(`${user_uri}`,
+        {
+          method: 'PUT',
+          body: formData,
+        }
+      );
+  
+      if (response.ok) {
+        setStatus(status);
+      } else {
+        console.error('Error updating appointment status:', response.status);
+      }
+    } catch (error) {
+      console.error('Error updating appointment status:', error);
+    }
   };
 
   return (
@@ -18,9 +57,18 @@ const Appointment = ({ appointment }) => {
       <td>{formatDateTime(appointment.datetime)}</td>
       <td>{appointment.remarks}</td>
       <td>{appointment.diagnosis_duration_days}</td>
+      <td>{getStatusString(status)}</td>
       <td>
         <Link to={`/appointment-details/${appointment_id}`}>View</Link>
       </td>
+      {userType === false && appointment.status === 0 && (
+        <td>
+          <div style={{display:'flex'}}>
+          <button onClick={()=>updateAppointmentStatus(1)}>✓</button>
+          <button onClick={()=>updateAppointmentStatus(-1)}>✕</button>
+          </div>
+        </td>
+      )}
     </tr>
   );
 };

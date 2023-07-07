@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const VaccinationHistory = ({ user_id }) => {
   const [vaccinationHistoryEntries, setVaccinationHistoryEntries] = useState([]);
-  const url = 'http://192.168.193.8:8000/';
+  const url = 'http://192.168.199.8:8000/';
   const user_uri = url + 'api/patient/get/vaccines/?patient_id=';
 
   useEffect(() => {

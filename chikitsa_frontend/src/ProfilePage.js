@@ -14,7 +14,7 @@ import './profilePage.css';
 const ProfilePage = () => {
   const [currentPage, setCurrentPage] = useState('profile');
   const [profileData, setProfileData] = useState(null);
-  const url = 'http://192.168.193.8:8000/';
+  const url = 'http://192.168.199.8:8000/';
   const user_uri = url + 'api/user/get/?id=';
   const {user_id} = useContext(UserContext);
 

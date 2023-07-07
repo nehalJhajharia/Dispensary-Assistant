@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 const AppointmentDetails = () => {
   const { appointment_id } = useParams();
   const [appointmentDetails, setAppointmentDetails] = useState(null);
-  const url = 'http://192.168.193.8:8000/';
+  const url = 'http://192.168.199.8:8000/';
   const appointmentDetailsURL = url + `api/appointment/get/details/?appointment_id=${appointment_id}`;
 
   useEffect(() => {

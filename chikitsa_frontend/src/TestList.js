@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 function TestList({user_id}) {
   const [testList, setTestList] = useState([]);
-  const url = 'http://192.168.193.8:8000/';
+  const url = 'http://192.168.199.8:8000/';
   const testListUrl = url + 'api/patient/get/all-tests/?patient_id=';
 
   useEffect(() => {
