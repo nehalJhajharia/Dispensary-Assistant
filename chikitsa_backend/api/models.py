@@ -59,10 +59,14 @@ class MedicalHistory(models.Model):
     prev_operation_injury = models.CharField(max_length=200, default="nil")
     chronic_disease = models.CharField(max_length=200, default="nil")
     allergic_medicine = models.CharField(max_length=200, default="nil")
+
+class VaccineMaster(models.Model):
+    name = models.CharField(max_length=100, null=False)
+    details = models.CharField(max_length=200, null=True, blank=True, default='nil')
     
 class Vaccine(models.Model):
     patient = models.ForeignKey(Patient ,primary_key=False, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, null=False)
+    vaccine_master = models.ForeignKey(VaccineMaster, primary_key=False, on_delete=models.CASCADE)
     date = models.DateField()
     
 class MedicineMaster(models.Model):
@@ -116,16 +120,20 @@ class Symptoms(models.Model):
     urine_color = models.CharField(max_length=50, null=True, blank=True, default='nil')
     other = models.CharField(max_length=200, default='nil')
 
+class TestMaster(models.Model):
+    name = models.CharField(max_length=100, null=False)
+    details = models.CharField(max_length=200, null=True, blank=True, default='nil')
+
 class Test(models.Model):
     appointment = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, null=False)
+    test_master = models.ForeignKey(TestMaster, primary_key=False, on_delete=models.CASCADE)
     date = models.DateField()
     remarks = models.CharField(max_length=200, null=True, blank=True)
-    image = models.ImageField(null=True, blank=True)
+    # image = models.ImageField(null=True, blank=True)
 
 class Medicine(models.Model):
     appointment = models.ForeignKey(Appointment, primary_key=False, on_delete=models.CASCADE)
-    medicine = models.ForeignKey(MedicineMaster, primary_key=False, on_delete=models.CASCADE)
+    medicine_master = models.ForeignKey(MedicineMaster, primary_key=False, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
     morning = models.BooleanField(default=False)

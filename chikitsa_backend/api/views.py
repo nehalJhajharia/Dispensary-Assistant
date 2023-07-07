@@ -4,10 +4,12 @@ from django.core.exceptions import ValidationError
 from django.forms.models import model_to_dict
 from .models import MyUser, Patient, Doctor, Student, Staff, MedicalHistory
 from .models import Vaccine, Test, MedicineMaster, Appointment, Symptoms, Medicine
+from .models import TestMaster, VaccineMaster
 from .serializers import MyUserSerializer, PatientSerializer, DoctorSerializer
 from .serializers import StudentSerializer, StaffSerializer, MedicalHistorySerializer
 from .serializers import VaccineSerializer, TestSerializer, MedicineMasterSerializer
 from .serializers import AppointmentSerializer, SymptomsSerializer, MedicineSerializer
+from .serializers import TestMasterSerializer, VaccineMasterSerializer
 
 def convertBooleans(data):
     new_data = {}
@@ -102,7 +104,7 @@ def getTests(request):
     return Response({'tests_data': getTestsData(appointment)})
 
 @api_view(['GET'])
-def getAllTests(request):
+def getTestsByPatient(request):
     try:
         patient_id = request.GET.get('patient_id')
         all_appointments = Appointment.objects.filter(patient=patient_id)
@@ -123,6 +125,18 @@ def getAllMedicines(request):
     all_medicines = MedicineMaster.objects.all()
     all_med_data = MedicineMasterSerializer(all_medicines, many=True).data
     return Response([{'all_med_data': all_med_data}])
+
+@api_view(['GET'])
+def getAllTests(request):
+    all_tests = TestMaster.objects.all()
+    data = TestMasterSerializer(all_tests, many=True).data
+    return Response([{'all_tests_data': data}])
+
+@api_view(['GET'])
+def getAllVaccines(request):
+    all_vaccines = VaccineMaster.objects.all()
+    data = VaccineMasterSerializer(all_vaccines, many=True).data
+    return Response([{'all_vaccines_data': data}])
 
 @api_view(['GET'])
 def getAppointmentByPatient(request):
@@ -167,9 +181,11 @@ def createNewVaccine(request):
     try:
         data = request.data
         patient = Patient.objects.get(user_id = data['patient_id'])
+        vaccine_master = VaccineMaster.objects.get(id = data['vaccine_master_id'])
+
         Vaccine.objects.create(
             patient = patient,
-            name = data['name'],
+            vaccine_master = vaccine_master,
             date = data['date']
         )
         return Response({'message': 'Vaccine created successfully.'})
@@ -183,13 +199,14 @@ def createNewTest(request):
     try:
         data = request.data
         appointment = Appointment.objects.get(id=data['appointment_id'])
+        test_master = TestMaster.objects.get(id=data['test_master_id'])
 
         Test.objects.create(
             appointment = appointment,
-            name = data['name'],
+            test_master = test_master,
             date = data['date'],
             remarks = data['remarks'],
-            image = data['image']
+            # image = data['image']
         )
         return Response({'message': 'Test created successfully.'})
     except KeyError as e:
@@ -198,7 +215,7 @@ def createNewTest(request):
         return Response({'error': str(e)})
     
 @api_view(['POST'])
-def createNewMedicine(request):
+def createNewMedicineMater(request):
     try:
         medicine_data = request.data
         new_medicine = MedicineMaster()
@@ -401,7 +418,6 @@ def updateAppointmentStatus(request):
             return Response({'error': 'status can be -1, 0, 1, 2 only'})
         
         appointment_id = data['appointment_id']
-        print(data)
         appointment = Appointment.objects.get(id = appointment_id)
         appointment.status = int(data['status'])
         appointment.save()
@@ -417,7 +433,6 @@ def updateSymptoms(request):
     try:
         data = convertBooleans(request.data)
         symptoms_id = data['symptoms_id']
-        print(data)
         symptoms = Symptoms.objects.get(id = symptoms_id)
         for field in data:
             if hasattr(symptoms, field):
@@ -429,3 +444,20 @@ def updateSymptoms(request):
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return Response({'error': str(e)})
+    
+# @api_view(['PUT'])  
+# def updateTest(request):
+#     try:
+#         data = convertBooleans(request.data)
+#         symptoms_id = data['symptoms_id']
+#         symptoms = Symptoms.objects.get(id = symptoms_id)
+#         for field in data:
+#             if hasattr(symptoms, field):
+#                 setattr(symptoms, field, data[field])
+
+#         symptoms.save()
+#         return Response({'message': 'Symptoms updated successfully.'})
+#     except KeyError as e:
+#         return Response({'error': f'Missing required field: {str(e)}'})
+#     except ValidationError as e:
+#         return Response({'error': str(e)})
