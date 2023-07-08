@@ -5,6 +5,8 @@ urlpatterns = [
     path('user/get/', views.getMyUser), # (id)
     path('patient/create/student/', views.createStudent), # (all student details)
     path('patient/create/staff/', views.createStaff), # (all staff details)
+    path('patient/update/staff/', views.updateStaff), # (id, all staff details)
+    path('patient/update/student/', views.updateStudent), # (id, all student details)
     path('patient/get/medical-history/', views.getMedicalHistory), # (patient_id)
     path('patient/create/medical-history/', views.createMedicalHistory), # (patient_id, medical history data)
     path('patient/update/medical-history/', views.updateMedicalHistory), # (med_hist_id, medical history data)

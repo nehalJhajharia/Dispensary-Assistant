@@ -498,23 +498,83 @@ def updateMedicalHistory(request):
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
-        return Response({'error': str(e)})   
+        return Response({'error': str(e)})  
 
-def updateDocotr(request):
-    print()
-
-@api_view(['PUT'])
-def updateUser(request):
+def updateUser(user, data):
     try:
-        data = request.data
-        user = MyUser.objects.get(id=data['id'])
+        if not user.patient_or_doc:
+            return False, Response({'error': 'Doctor profile is immutable.'})
 
         for field in data:
                 if hasattr(user, field):
                     setattr(user, field, data[field])
 
         user.save()
-        return Response({'message': 'User updated successfully'})
+        return True, Response({'message': 'User updated successfully'})
+    except KeyError as e:
+        return False, Response({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return False, Response({'error': str(e)}) 
+
+def updatePatient(user, patient, data):
+    try:
+        user_updated, response = updateUser(user, data)
+        if not user_updated:
+            return response
+        
+        patient = Patient.objects.get(user=user)
+        for field in data:
+            if hasattr(patient, field):
+                setattr(patient, field, data[field])
+
+        patient.save()
+        return True, Response({'message': 'Patient updated successfully'})
+    except KeyError as e:
+        user.delete()
+        return False, Response({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        user.delete()
+        return False, Response({'error': str(e)})
+
+@api_view(['PUT'])
+def updateStaff(request):
+    try:
+        data = convertBooleans(request.data)
+        user = MyUser.objects.get(id = data['id'])
+        patient = Patient.objects.get(user=user)
+        patient_updated ,response = updatePatient(user, patient, data)
+        if not patient_updated:
+            return response
+
+        staff = Staff.objects.get(patient=patient)
+        for field in data:
+                if hasattr(staff, field):
+                    setattr(staff, field, data[field])
+
+        staff.save()
+        return Response({'message': 'Staff updated successfully'})
+    except KeyError as e:
+        return Response({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return Response({'error': str(e)})
+    
+@api_view(['PUT'])
+def updateStudent(request):
+    try:
+        data = convertBooleans(request.data)
+        user = MyUser.objects.get(id = data['id'])
+        patient = Patient.objects.get(user=user)
+        patient_updated ,response = updatePatient(user, patient, data)
+        if not patient_updated:
+            return response
+
+        student = Student.objects.get(patient=patient)
+        for field in data:
+                if hasattr(student, field):
+                    setattr(student, field, data[field])
+
+        student.save()
+        return Response({'message': 'Student updated successfully'})
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
