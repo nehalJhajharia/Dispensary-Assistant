@@ -5,7 +5,7 @@ import UrlContext from './context/UrlContext';
 const CreateAppointment = () => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const {url} = useContext(UrlContext);
+  const url = useContext(UrlContext);
   const user_uri = url + 'api/patient/create/appointment/';
   const {user_id} = useContext(UserContext);
   const [fever, setFever] = useState(0);

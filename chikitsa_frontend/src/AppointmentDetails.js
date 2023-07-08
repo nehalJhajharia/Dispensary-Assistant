@@ -5,7 +5,7 @@ import UrlContext from './context/UrlContext';
 const AppointmentDetails = () => {
   const { appointment_id } = useParams();
   const [appointmentDetails, setAppointmentDetails] = useState(null);
-  const {url} = useContext(UrlContext);
+  const url = useContext(UrlContext);
   const appointmentDetailsURL = url + `api/appointment/get/details/?appointment_id=${appointment_id}`;
 
   useEffect(() => {
@@ -30,6 +30,25 @@ const AppointmentDetails = () => {
     return <div>Loading appointment details...</div>;
   }
 
+  const formatDateTime = (dateTimeString) => {
+    const dateTime = new Date(dateTimeString);
+    return dateTime.toLocaleString();
+  };
+
+  const getStatusString = (status) => {
+    if(status === -1){
+      return 'Rejected';
+    }else if(status === 0){
+      return 'Pending';
+    }else if(status === 1){
+      return 'Confirmed';
+    }else if(status === 2){
+      return 'Completed';
+    }else{
+      return 'Unknown';
+    }
+  };
+
   const renderMedicines = (medicines) => {
     if (Array.isArray(medicines) && medicines.length > 0) {
       return (
@@ -48,7 +67,7 @@ const AppointmentDetails = () => {
           <tbody>
             {medicines.map((medicine) => (
               <tr key={medicine.id}>
-                <td>{medicine.medicine}</td>
+                <td>{medicine.medicine_master}</td>
                 <td>{medicine.start_date}</td>
                 <td>{medicine.end_date}</td>
                 <td>{medicine.morning ? 'Yes' : 'No'}</td>
@@ -61,7 +80,6 @@ const AppointmentDetails = () => {
         </table>
       );
     }
-
     return <p>No medicines prescribed.</p>;
   };
 
@@ -81,7 +99,7 @@ const AppointmentDetails = () => {
             {tests.map((test) => (
               <tr key={test.id}>
                 <td>{test.id}</td>
-                <td>{test.name}</td>
+                <td>{test.test_master}</td>
                 <td>{test.date}</td>
                 <td>{test.remarks || 'No remarks'}</td>
               </tr>
@@ -123,55 +141,64 @@ const AppointmentDetails = () => {
     return <p>No symptoms recorded.</p>;
   };
 
-  const renderValue = (value) => {
-    if (Array.isArray(value)) {
-      if (value.length === 0) {
-        return <p>No data available.</p>;
-      }
-
-      if (value[0].hasOwnProperty('medicine')) {
-        return renderMedicines(value);
-      }
-
-      if (value[0].hasOwnProperty('name')) {
-        return renderTests(value);
-      }
-    }
-
-    if (typeof value === 'object' && value !== null) {
-      if (value.hasOwnProperty('fever')) {
-        return renderSymptoms(value);
-      }
-
-      return (
-        <ul>
-          {Object.entries(value).map(([key, val]) => (
-            <li key={key}>
-              <strong>{key}:</strong> {val}
-            </li>
-          ))}
-        </ul>
-      );
-    }
-
-    return value;
-  };
-
   return (
     <div style={{ overflow: 'auto', maxHeight: '100vh' }}>
       <h2>Appointment Details</h2>
       <table>
         <tbody>
-          {Object.entries(appointmentDetails).map(([key, value]) => (
-            <tr key={key}>
-              <td>{key}:</td>
-              <td>{renderValue(value)}</td>
-            </tr>
-          ))}
+          <tr>
+            <td>Date and Time:</td>
+            <td>{formatDateTime(appointmentDetails.datetime)}</td>
+          </tr>
+          <tr>
+            <td>Appointment Created At:</td>
+            <td>{formatDateTime(appointmentDetails.appointment_created_at)}</td>
+          </tr>
+          <tr>
+            <td>Status:</td>
+            <td>{getStatusString(appointmentDetails.status)}</td>
+          </tr>
+          <tr>
+            <td>Remarks:</td>
+            <td>{appointmentDetails.remarks}</td>
+          </tr>
+          <tr>
+            <td>Diagnosis Duration (Days):</td>
+            <td>{appointmentDetails.diagnosis_duration_days}</td>
+          </tr>
+          <tr>
+            <td>Patient:</td>
+            <td>{appointmentDetails.patient}</td>
+          </tr>
+          <tr>
+            <td>Doctor:</td>
+            <td>{appointmentDetails.doctor}</td>
+          </tr>
+          <br></br>
+          <tr>
+            <td><h4>Symptoms</h4></td>
+          </tr>
+          <tr>
+            <td>{renderSymptoms(appointmentDetails.symptoms)}</td>
+          </tr>
+          <br></br>
+          <tr>
+            <td><h4>Medicines</h4></td>
+          </tr>
+          <tr>
+            <td>{renderMedicines(appointmentDetails.medicines)}</td>
+          </tr>
+          <br></br>
+          <tr>
+            <td><h4>Tests</h4></td>
+          </tr>
+          <tr>
+            <td>{renderTests(appointmentDetails.tests)}</td>
+          </tr>
         </tbody>
       </table>
     </div>
-  );
+  );  
 };
 
 export default AppointmentDetails;

@@ -15,8 +15,9 @@ import UrlContext from './context/UrlContext';
 const ProfilePage = () => {
   const [currentPage, setCurrentPage] = useState('profile');
   const [profileData, setProfileData] = useState(null);
-  const {url} = useContext(UrlContext);
+  const url = useContext(UrlContext);
   const user_uri = url + 'api/user/get/?id=';
+  console.log(user_uri);
   const {user_id} = useContext(UserContext);
 
   useEffect(() => {

@@ -5,7 +5,7 @@ import UrlContext from './context/UrlContext';
 const Appointment = ({ appointment , userType}) => {
   const appointment_id = appointment.id;
   const [status, setStatus]  = useState(appointment.status);
-  const {url} = useContext(UrlContext);
+  const url = useContext(UrlContext);
   const user_uri = url + 'api/doctor/update/appointment-status/';
 
   

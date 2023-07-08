@@ -8,7 +8,7 @@ const CreateTest = () => {
   const [remarks, setRemarks] = useState('');
   const [image, setImage] = useState(null);
 
-  const {url} = useContext(UrlContext);
+  const url = useContext(UrlContext);
   const user_uri = url + 'api/patient/create/test/';
 
   const handleSubmit = async (e) => {

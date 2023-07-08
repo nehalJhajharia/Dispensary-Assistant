@@ -5,7 +5,7 @@ import UrlContext from './context/UrlContext';
 
 const VaccinationHistory = ({ user_id }) => {
   const [vaccinationHistoryEntries, setVaccinationHistoryEntries] = useState([]);
-  const {url} = useContext(UrlContext);
+  const url = useContext(UrlContext);
   const user_uri = url + 'api/patient/get/vaccines/?patient_id=';
 
   useEffect(() => {

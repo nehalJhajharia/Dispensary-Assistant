@@ -5,7 +5,7 @@ import UrlContext from './context/UrlContext';
 
 function MedicalHistory ({user_id}) {
   const [medicalData, setMedicalData] = useState([]);
-  const {url} = useContext(UrlContext);
+  const url = useContext(UrlContext);
   const user_uri = url + 'api/patient/get/medical-history/?patient_id=';
 
   useEffect(() => {

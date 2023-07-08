@@ -6,7 +6,7 @@ import UrlContext from './context/UrlContext';
 
 function TestList({user_id}) {
   const [testList, setTestList] = useState([]);
-  const {url} = useContext(UrlContext);
+  const url = useContext(UrlContext);
   const testListUrl = url + 'api/patient/get/all-tests/?patient_id=';
 
   useEffect(() => {

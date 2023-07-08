@@ -5,7 +5,7 @@ import UrlContext from './context/UrlContext';
 const CreateVaccine = () => {
   const [vaccineName, setVaccineName] = useState('');
   const [date, setDate] = useState('');
-  const {url} = useContext(UrlContext);
+  const url = useContext(UrlContext);
   const user_uri = url + 'api/patient/create/vaccine/';
   const { user_id } = useContext(UserContext); 
 
