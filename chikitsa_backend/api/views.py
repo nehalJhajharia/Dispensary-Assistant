@@ -26,9 +26,12 @@ def convertBooleans(data):
 
 @api_view(['GET'])
 def getMyUser(request):
-    user_id = request.GET.get('id')
-    user_data = getMyUserById(user_id)
-    return Response(user_data)
+    try:
+        user_id = request.GET.get('id')
+        user_data = getMyUserById(user_id)
+        return Response(user_data)
+    except:
+        return Response({'error': 'User not found!!'})
 
 def getMyUserById(user_id):
     user = MyUser.objects.get(id = user_id)
@@ -63,15 +66,18 @@ def getDoctor(user):
 
 @api_view(['GET'])
 def getAllDoctors(request):
-    all_doctors = Doctor.objects.all()
-    all_doc_data = {}
+    try:
+        all_doctors = Doctor.objects.all()
+        all_doc_data = {}
 
-    for doctor in all_doctors:
-        id = doctor.user_id
-        doc_data = getMyUserById(id)
-        all_doc_data[f'{str(id)}'] = f'{str(doc_data)}'
+        for doctor in all_doctors:
+            id = doctor.user_id
+            doc_data = getMyUserById(id)
+            all_doc_data[f'{str(id)}'] = f'{str(doc_data)}'
 
-    return Response(all_doc_data)
+        return Response(all_doc_data)
+    except:
+        return Response({'error': 'No doctor data!!'})
 
 def getStudent(user_id):
     student = Student.objects.get(patient = user_id)
@@ -85,23 +91,32 @@ def getStaff(user_id):
 
 @api_view(['GET'])
 def getMedicalHistory(request):
-    patient = request.GET.get('patient_id')
-    medical_history = MedicalHistory.objects.get(patient = patient)
-    history_data = MedicalHistorySerializer(medical_history).data
-    return Response(history_data)
+    try:
+        patient = request.GET.get('patient_id')
+        medical_history = MedicalHistory.objects.get(patient = patient)
+        history_data = MedicalHistorySerializer(medical_history).data
+        return Response(history_data)
+    except:
+        return Response({'error': 'Medical History does not exist!!'})
 
 @api_view(['GET'])
 def getVaccines(request):
-    patient = request.GET.get('patient_id')
-    vaccines = Vaccine.objects.filter(patient_id = patient)
-    vaccines_data = VaccineSerializer(vaccines, many=True).data
-    return Response({'vaccines_data': vaccines_data})
+    try:
+        patient = request.GET.get('patient_id')
+        vaccines = Vaccine.objects.filter(patient_id = patient)
+        vaccines_data = VaccineSerializer(vaccines, many=True).data
+        return Response({'vaccines_data': vaccines_data})
+    except:
+        return Response({'error': 'Vaccine data does not exist!!'})
 
 @api_view(['GET'])
 def getTests(request):
-    appointment_id = request.GET.get('appointment_id')
-    appointment = Appointment.objects.get(id=appointment_id)
-    return Response({'tests_data': getTestsData(appointment)})
+    try:
+        appointment_id = request.GET.get('appointment_id')
+        appointment = Appointment.objects.get(id=appointment_id)
+        return Response({'tests_data': getTestsData(appointment)})
+    except:
+        return Response({'error': 'Test data does not exist!!'})
 
 @api_view(['GET'])
 def getTestsByPatient(request):
@@ -122,35 +137,50 @@ def getTestsByPatient(request):
 
 @api_view(['GET'])
 def getAllMedicines(request):
-    all_medicines = MedicineMaster.objects.all()
-    all_med_data = MedicineMasterSerializer(all_medicines, many=True).data
-    return Response([{'all_med_data': all_med_data}])
+    try:
+        all_medicines = MedicineMaster.objects.all()
+        all_med_data = MedicineMasterSerializer(all_medicines, many=True).data
+        return Response([{'all_med_data': all_med_data}])
+    except:
+        return Response({'error': 'Medicine data does not exist!!'})
 
 @api_view(['GET'])
 def getAllTests(request):
-    all_tests = TestMaster.objects.all()
-    data = TestMasterSerializer(all_tests, many=True).data
-    return Response([{'all_tests_data': data}])
+    try:
+        all_tests = TestMaster.objects.all()
+        data = TestMasterSerializer(all_tests, many=True).data
+        return Response([{'all_tests_data': data}])
+    except:
+        return Response({'error': 'Test data does not exist!!'})
 
 @api_view(['GET'])
 def getAllVaccines(request):
-    all_vaccines = VaccineMaster.objects.all()
-    data = VaccineMasterSerializer(all_vaccines, many=True).data
-    return Response([{'all_vaccines_data': data}])
+    try:
+        all_vaccines = VaccineMaster.objects.all()
+        data = VaccineMasterSerializer(all_vaccines, many=True).data
+        return Response([{'all_vaccines_data': data}])
+    except:
+        return Response({'error': 'Vaccine data does not exist!!'})
 
 @api_view(['GET'])
 def getAppointmentByPatient(request):
-    patient_id = request.GET.get('patient_id')
-    appointments = Appointment.objects.filter(patient=patient_id)
-    appointments_data = AppointmentSerializer(appointments, many=True).data
-    return Response({'appointments': appointments_data})
+    try:
+        patient_id = request.GET.get('patient_id')
+        appointments = Appointment.objects.filter(patient=patient_id)
+        appointments_data = AppointmentSerializer(appointments, many=True).data
+        return Response({'appointments': appointments_data})
+    except:
+        return Response({'error': 'Appointment does not exist!!'})
 
 @api_view(['GET'])
 def getAppointmentByDoctor(request):
-    doctor_id = request.GET.get('doctor_id')
-    appointments = Appointment.objects.filter(doctor=doctor_id)
-    appointments_data = AppointmentSerializer(appointments, many=True).data
-    return Response({'appointments': appointments_data})
+    try:
+        doctor_id = request.GET.get('doctor_id')
+        appointments = Appointment.objects.filter(doctor=doctor_id)
+        appointments_data = AppointmentSerializer(appointments, many=True).data
+        return Response({'appointments': appointments_data})
+    except:
+        return Response({'error': 'Appointment does not exist!!'})
 
 def getMedicines(appointment):
     medicines = Medicine.objects.filter(appointment=appointment)
@@ -166,20 +196,23 @@ def getSymptoms(appointment):
 
 @api_view(['GET'])
 def getAppointmentDetails(request):
-    appointment_id = request.GET.get('appointment_id')
-    appointment = Appointment.objects.get(id=appointment_id)
-    details = AppointmentSerializer(appointment, many=False).data
-    details['symptoms'] = getSymptoms(appointment)
-    details['medicines'] = getMedicines(appointment)
-    details['tests'] = getTestsData(appointment)
-    return Response(details)
+    try:
+        appointment_id = request.GET.get('appointment_id')
+        appointment = Appointment.objects.get(id=appointment_id)
+        details = AppointmentSerializer(appointment, many=False).data
+        details['symptoms'] = getSymptoms(appointment)
+        details['medicines'] = getMedicines(appointment)
+        details['tests'] = getTestsData(appointment)
+        return Response(details)
+    except:
+        return Response({'error': 'Appointment does not exist!!'})
 
 ####################### POST #######################
 
 @api_view(['POST'])
 def createNewVaccine(request):
     try:
-        data = request.data
+        data = convertBooleans(request.data)
         patient = Patient.objects.get(user_id = data['patient_id'])
         vaccine_master = VaccineMaster.objects.get(id = data['vaccine_master_id'])
 
@@ -197,7 +230,7 @@ def createNewVaccine(request):
 @api_view(['POST'])
 def createNewTest(request):
     try:
-        data = request.data
+        data = convertBooleans(request.data)
         appointment = Appointment.objects.get(id=data['appointment_id'])
         test_master = TestMaster.objects.get(id=data['test_master_id'])
 
@@ -217,7 +250,7 @@ def createNewTest(request):
 @api_view(['POST'])
 def createNewMedicineMater(request):
     try:
-        medicine_data = request.data
+        medicine_data = convertBooleans(request.data)
         new_medicine = MedicineMaster()
         for field in medicine_data:
             if hasattr(new_medicine, field):
@@ -232,12 +265,12 @@ def createNewMedicineMater(request):
     
 def getNewMyUser(request):
     try:
-        user_data = request.data
+        data = convertBooleans(request.data)
         new_user = MyUser()
 
-        for field in user_data:
+        for field in data:
                 if hasattr(new_user, field):
-                    setattr(new_user, field, user_data[field])
+                    setattr(new_user, field, data[field])
 
         new_user.save()
         return new_user
@@ -248,16 +281,16 @@ def getNewMyUser(request):
 
 @api_view(['POST'])
 def createDoctor(request):
-    doctor_data = request.data
+    data = convertBooleans(request.data)
     user = getNewMyUser(request)
     if type(user) is MyUser:
         try:
             new_doctor = Doctor()
             new_doctor.user = user
 
-            for field in doctor_data:
+            for field in data:
                 if hasattr(new_doctor, field):
-                    setattr(new_doctor, field, doctor_data[field])
+                    setattr(new_doctor, field, data[field])
 
             new_doctor.save()
             return Response({'message': 'Doctor created successfully'})
@@ -271,16 +304,16 @@ def createDoctor(request):
         return user
 
 def getNewPatient(request):
-    patient_data = request.data
+    data = convertBooleans(request.data)
     user = getNewMyUser(request)
     if type(user) is MyUser:
         try:
             new_patient = Patient()
             new_patient.user = user
 
-            for field in patient_data:
+            for field in data:
                 if hasattr(new_patient, field):
-                    setattr(new_patient, field, patient_data[field])
+                    setattr(new_patient, field, data[field])
 
             new_patient.save()
             return new_patient, user
@@ -295,16 +328,16 @@ def getNewPatient(request):
 
 @api_view(['POST'])
 def createStudent(request):
-    student_data = request.data
+    data = convertBooleans(request.data)
     patient, user = getNewPatient(request)
     if type(patient) is Patient:
         try:
             new_student = Student()
             new_student.patient = patient
 
-            for field in student_data:
+            for field in data:
                 if hasattr(new_student, field):
-                    setattr(new_student, field, student_data[field])
+                    setattr(new_student, field, data[field])
 
             new_student.save()
             return Response({'message': 'Student created successfully'})
@@ -318,16 +351,16 @@ def createStudent(request):
     
 @api_view(['POST'])
 def createStaff(request):
-    staff_data = request.data
+    data = convertBooleans(request.data)
     patient, user = getNewPatient(request)
     if type(patient) is Patient:
         try:
             new_staff = Staff()
             new_staff.patient = patient
 
-            for field in staff_data:
+            for field in data:
                 if hasattr(new_staff, field):
-                    setattr(new_staff, field, staff_data[field])
+                    setattr(new_staff, field, data[field])
 
             new_staff.save()
             return Response({'message': 'Staff created successfully'})
@@ -412,7 +445,7 @@ def checkStatus(status):
 @api_view(['PUT'])  
 def updateAppointmentStatus(request):
     try:
-        data = request.data
+        data = convertBooleans(request.data)
         status = int(data['status'])
         if not checkStatus(status):
             return Response({'error': 'status can be -2, -1, 0, 1, 2 only'})
