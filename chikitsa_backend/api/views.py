@@ -405,7 +405,7 @@ def createSymptoms(data, appointment):
 ####################### PUT #######################
 
 def checkStatus(status):
-    if status < -1 or status > 2:
+    if status < -2 or status > 2:
         return False
     return True
 
@@ -415,7 +415,7 @@ def updateAppointmentStatus(request):
         data = request.data
         status = int(data['status'])
         if not checkStatus(status):
-            return Response({'error': 'status can be -1, 0, 1, 2 only'})
+            return Response({'error': 'status can be -2, -1, 0, 1, 2 only'})
         
         appointment_id = data['appointment_id']
         appointment = Appointment.objects.get(id = appointment_id)
@@ -483,11 +483,12 @@ def updateVaccine(request):
 def updateMedicalHistory(request):
     try:
         data = convertBooleans(request.data)
+        med_id = data['med_hist_id']
         
-        if not MedicalHistory.objects.filter(id = data['med_hist_id']).exists:
+        if not MedicalHistory.objects.filter(id = med_id).exists:
             return Response({'error': 'Medical history does not exist!!'})
 
-        hist = MedicalHistory.objects.get(id = data['med_hist_id'])
+        hist = MedicalHistory.objects.get(id = med_id)
         for field in data:
             if hasattr(hist, field):
                 setattr(hist, field, data[field])
@@ -498,3 +499,23 @@ def updateMedicalHistory(request):
         return Response({'error': f'Missing required field: {str(e)}'})
     except ValidationError as e:
         return Response({'error': str(e)})   
+
+def updateDocotr(request):
+    print()
+
+@api_view(['PUT'])
+def updateUser(request):
+    try:
+        data = request.data
+        user = MyUser.objects.get(id=data['id'])
+
+        for field in data:
+                if hasattr(user, field):
+                    setattr(user, field, data[field])
+
+        user.save()
+        return Response({'message': 'User updated successfully'})
+    except KeyError as e:
+        return Response({'error': f'Missing required field: {str(e)}'})
+    except ValidationError as e:
+        return Response({'error': str(e)})
