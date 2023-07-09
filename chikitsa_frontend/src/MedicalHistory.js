@@ -1,10 +1,13 @@
 //MedicalHistory
-import React, { useState, useEffect } from 'react';
-import './medicalHistory.css'
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import UrlContext from './context/UrlContext';
+import 'bootstrap/dist/css/bootstrap.css';
 
 function MedicalHistory ({user_id}) {
+  const navigate = useNavigate();
   const [medicalData, setMedicalData] = useState([]);
-  const url = 'http://192.168.193.8:8000/';
+  const url = useContext(UrlContext);
   const user_uri = url + 'api/patient/get/medical-history/?patient_id=';
 
   useEffect(() => {
@@ -27,10 +30,19 @@ function MedicalHistory ({user_id}) {
 
   return (
     <div>
-      <h2>Medical History</h2>
+      <h2 className='mt-3 text-center'>Medical History</h2>
       <div>
-      <table>
+      <table className='table table-sm'>
         <tbody>
+          <h5>Self</h5> 
+          <tr>
+            <td>Hypertension (Self)</td>
+            <td>{medicalData.hypertension_self ? 'Yes' : 'No'}</td>
+          </tr>
+          <tr>
+            <td>Diabetes (Self)</td>
+            <td>{medicalData.diabetes_self ? 'Yes' : 'No'}</td>
+          </tr>
           <tr>
             <td>Allergic Medicine</td>
             <td>{medicalData.allergic_medicine}</td>
@@ -43,32 +55,31 @@ function MedicalHistory ({user_id}) {
             <td>Previous Operation Injury</td>
             <td>{medicalData.prev_operation_injury}</td>
           </tr>
+          <br />
+          <h5>Father</h5>
           <tr>
-            <td>Diabetes (Self)</td>
-            <td>{String(medicalData.diabetes_self)}</td>
-          </tr>
-          <tr>
-            <td>Diabetes (Mother)</td>
-            <td>{String(medicalData.diabetes_mother)}</td>
+            <td>Hypertension (Father)</td>
+            <td>{medicalData.hypertension_father ? 'Yes' : 'No'}</td>
           </tr>
           <tr>
             <td>Diabetes (Father)</td>
-            <td>{String(medicalData.diabetes_father)}</td>
+            <td>{medicalData.diabetes_father ? 'Yes' : 'No'}</td>
           </tr>
-          <tr>
-            <td>Hypertension (Self)</td>
-            <td>{String(medicalData.hypertension_self)}</td>
-          </tr>
+          <br />
+          <h5>Mother</h5>
           <tr>
             <td>Hypertension (Mother)</td>
-            <td>{String(medicalData.hypertension_mother)}</td>
+            <td>{medicalData.hypertension_mother ? 'Yes' : 'No'}</td>
           </tr>
           <tr>
-            <td>Hypertension (Mother)</td>
-            <td>{String(medicalData.hypertension_father)}</td>
+            <td>Diabetes (Mother)</td>
+            <td>{medicalData.diabetes_mother ? 'Yes' : 'No'}</td>
           </tr>
         </tbody>
-      </table>  
+      </table>
+      <button className='mt-3 w-100 mx-auto' style={{position:'relative',}} onClick={() =>
+        navigate("/edit-medical-history", {state: medicalData})
+      }>Edit</button>
       </div>
     </div>
   );

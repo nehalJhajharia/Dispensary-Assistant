@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import UrlContext from './context/UrlContext';
 
 const CreateTest = () => {
   const [appointmentId, setAppointmentId] = useState('');
@@ -7,7 +8,7 @@ const CreateTest = () => {
   const [remarks, setRemarks] = useState('');
   const [image, setImage] = useState(null);
 
-  const url = 'http://192.168.193.8:8000/';
+  const url = useContext(UrlContext);
   const user_uri = url + 'api/patient/create/test/';
 
   const handleSubmit = async (e) => {

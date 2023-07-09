@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import './appointments.css';
+import Appointment from './Appointment';
+import UrlContext from './context/UrlContext';
 
 const Appointments = ({ user_id, userType }) => {
   const [appointmentsList, setAppointmentsList] = useState([]);
-  const url = 'http://192.168.193.8:8000/';
+  const url = useContext(UrlContext);
   const patientAppointmentsURL = url + 'api/patient/get/appointments/?patient_id=';
   const doctorAppointmentsURL = url + 'api/doctor/get/appointments/?doctor_id=';
 
@@ -29,40 +31,32 @@ const Appointments = ({ user_id, userType }) => {
     }
   };
 
-  const formatDateTime = (dateTimeString) => {
-    const dateTime = new Date(dateTimeString);
-    return dateTime.toLocaleString();
-  };
 
   return (
     <div>
-      <h2>Appointments</h2>
-      {userType === true && (
-        <Link to={`/create-appointment`} className="create-appointment-button" >
-          Create New Appointment
+      <div className='mt-3' style={{display:'flex', justifyContent:'space-between'}}>
+        <h2>Appointments</h2>
+        {userType === true && (
+        <Link to={`/create-appointment`} >
+          <button style={{position:'relative', alignItems:'center'}}>New Appointment</button>
         </Link>      
       )}
-      <table>
+      </div>
+      
+      <table className='table table-sm'>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Patient ID</th>
-            <th>Doctor ID</th>
-            <th>Date and Time</th>
-            <th>Remarks</th>
-            <th>Diagnosis Duration (Days)</th>
+            <th>Patient </th>
+            <th>Doctor </th>
+            <th>Date </th>
+            <th>Time </th>
+            <th>Status</th>
+            <th>More</th>
           </tr>
         </thead>
         <tbody>
           {appointmentsList.map((appointment) => (
-            <tr key={appointment.id}>
-              <td>{appointment.id}</td>
-              <td>{appointment.patient}</td>
-              <td>{appointment.doctor}</td>
-              <td>{formatDateTime(appointment.datetime)}</td>
-              <td>{appointment.remarks}</td>
-              <td>{appointment.diagnosis_duration_days}</td>
-            </tr>
+            <Appointment key={appointment.id} appointment={appointment} userType={userType}/>
           ))}
         </tbody>
       </table>

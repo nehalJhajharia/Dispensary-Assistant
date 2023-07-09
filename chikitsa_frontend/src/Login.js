@@ -1,11 +1,11 @@
 // Login.js
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './login.css';
 import { UserContext } from './context/UserContext';
+import './login.css';
 
 const Login = () => {
-  const [user_id, setUserId] = useState();
+  const [user_id, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -58,7 +58,6 @@ const Login = () => {
             name="password"
             value={password}
             onChange={handlePasswordChange}
-            required
           />
           <button
             type="button"

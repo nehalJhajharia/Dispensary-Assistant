@@ -1,5 +1,4 @@
 import React from 'react';
-import './profile.css';
 
 function Profile({profileData}) {
   const formatDateAndTime = (dateTimeString) => {
@@ -50,14 +49,18 @@ function Profile({profileData}) {
           )}
           {profileData.degree && (
             <div>
-              <p>Degree: {profileData.degree}</p>
-              <p>Specialization: {profileData.specialization}</p>
-              <p>Experience: {profileData.experience} years</p>
+              <p>{profileData.degree}</p>
+              <p><i>{profileData.specialization}</i></p>
             </div>
           )}
           <p>Address: {profileData.address_line} {profileData.district} {profileData.state}, {profileData.pincode}</p>
-          <p>Registered on: {formatDateAndTime(profileData.datetime_of_reg).formattedDate} {formatDateAndTime(profileData.datetime_of_reg).formattedTime}</p>
-        
+          <p>
+            <div>
+              <p>{profileData.address_line}</p>
+              <p>{profileData.district} - {profileData.pincode}</p>
+              <p>{profileData.state}</p>
+            </div>
+          </p>
           </div>
           </div>
       ) : (
