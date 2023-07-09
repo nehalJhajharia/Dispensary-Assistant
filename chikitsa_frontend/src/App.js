@@ -7,10 +7,10 @@ import ProfilePage from './ProfilePage';
 import CreateAppointment from './CreateAppointment';
 import { UserProvider } from './context/UserContext';
 import SignupPage from './Signup';
-import CreateVaccine from './CreateVaccine';
 import CreateTest from './CreateTest';
 import AppointmentDetails from './AppointmentDetails';
 import { UrlProvider } from './context/UrlContext';
+import EditMedicalHistory from './EditMedicalHistory';
 
 function App() {
   return (
@@ -25,9 +25,9 @@ function App() {
           <Route exact path='/profile' element={<ProfilePage/>} />
           <Route exact path="/create-appointment" element={<CreateAppointment />} />
           <Route exact path="/appointment-details/:appointment_id" element={<AppointmentDetails />} />
-          <Route exact path="/create-vaccine" element={<CreateVaccine />} />
           <Route exact path="/create-test" element={<CreateTest />} />
           <Route exact path="/signup" element={<SignupPage />} />
+          <Route exact path='/edit-medical-history' element={<EditMedicalHistory />} />
         </Routes>
       </div>
     </Router>

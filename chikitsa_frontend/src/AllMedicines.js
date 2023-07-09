@@ -4,7 +4,7 @@ import UrlContext from './context/UrlContext';
 const AllMedicines = () => {
   const [medicineList, setMedicineList] = useState([]);
   const url = useContext(UrlContext)
-  const user_uri = url + 'api/doctor/get/all-medicines/';
+  const user_uri = url + 'api/master/get/all-medicines/';
 
   useEffect(() => {
     fetchMedicineList();

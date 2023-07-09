@@ -58,7 +58,6 @@ const Login = () => {
             name="password"
             value={password}
             onChange={handlePasswordChange}
-            required
           />
           <button
             type="button"

@@ -34,21 +34,22 @@ const Appointments = ({ user_id, userType }) => {
 
   return (
     <div>
-      <h2>Appointments</h2>
-      {userType === true && (
+      <div className='mt-3' style={{display:'flex', justifyContent:'space-between'}}>
+        <h2>Appointments</h2>
+        {userType === true && (
         <Link to={`/create-appointment`} >
-          Create New Appointment
+          <button style={{position:'relative', alignItems:'center'}}>New Appointment</button>
         </Link>      
       )}
-      <table>
+      </div>
+      
+      <table className='table table-sm'>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Patient ID</th>
-            <th>Doctor ID</th>
-            <th>Date and Time</th>
-            <th>Remarks</th>
-            <th>Diagnosis Duration (Days)</th>
+            <th>Patient </th>
+            <th>Doctor </th>
+            <th>Date </th>
+            <th>Time </th>
             <th>Status</th>
             <th>More</th>
           </tr>

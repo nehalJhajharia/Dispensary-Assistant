@@ -8,10 +8,13 @@ const Appointment = ({ appointment , userType}) => {
   const url = useContext(UrlContext);
   const user_uri = url + 'api/doctor/update/appointment-status/';
 
-  
-  const formatDateTime = (dateTimeString) => {
+  const formatTime = (dateTimeString) => {
     const dateTime = new Date(dateTimeString);
-    return dateTime.toLocaleString();
+    return dateTime.toLocaleTimeString([], { hour: 'numeric', minute: 'numeric' });
+  };
+  const formatDate = (dateTimeString) => {
+    const dateTime = new Date(dateTimeString);
+    return dateTime.toLocaleDateString();
   };
 
   const getStatusString = (status) => {
@@ -52,12 +55,10 @@ const Appointment = ({ appointment , userType}) => {
 
   return (
     <tr>
-      <td>{appointment.id}</td>
       <td>{appointment.patient}</td>
       <td>{appointment.doctor}</td>
-      <td>{formatDateTime(appointment.datetime)}</td>
-      <td>{appointment.remarks}</td>
-      <td>{appointment.diagnosis_duration_days}</td>
+      <td>{formatDate(appointment.datetime)}</td>
+      <td>{formatTime(appointment.datetime)}</td>
       <td>{getStatusString(status)}</td>
       <td>
         <Link to={`/appointment-details/${appointment_id}`}>View</Link>

@@ -11,13 +11,15 @@ import { UserContext } from './context/UserContext';
 import 'bootstrap/dist/css/bootstrap.css';
 import './profilePage.css';
 import UrlContext from './context/UrlContext';
+import StaffProfile from './StaffProfile';
+import StudentProfile from './StudentProfile';
+import DoctorProfile from './DoctorProfile';
 
 const ProfilePage = () => {
   const [currentPage, setCurrentPage] = useState('profile');
   const [profileData, setProfileData] = useState(null);
   const url = useContext(UrlContext);
   const user_uri = url + 'api/user/get/?id=';
-  console.log(user_uri);
   const {user_id} = useContext(UserContext);
 
   useEffect(() => {
@@ -38,41 +40,72 @@ const ProfilePage = () => {
     setCurrentPage(page);
   };
 
+  // const renderPageContent = () => {
+  //   switch (currentPage) {
+  //     case 'profile':
+  //       return <Profile profileData={profileData}/>;
+  //     case 'appointments':
+  //       return <Appointments user_id={user_id} userType={profileData && profileData.patient_or_doc}/>;
+  //     case 'medicalHistory':
+  //       return <MedicalHistory user_id={user_id}/>;
+  //     case 'vaccinationHistory':
+  //       return <VaccinationHistory user_id={user_id}/>;
+  //     case 'testList':
+  //       return <TestList user_id={user_id}/>;
+  //     case 'logout':
+  //       return <Login />;
+  //       case 'all-medicine':
+  //         return <AllMedicines/>;
+  //     default:
+  //       return <Profile />;
+  //   }
+  // };
+
   const renderPageContent = () => {
-    switch (currentPage) {
-      case 'profile':
-        return <Profile profileData={profileData}/>;
-      case 'appointments':
-        return <Appointments user_id={user_id} userType={profileData && profileData.patient_or_doc}/>;
-      case 'medicalHistory':
-        return <MedicalHistory user_id={user_id}/>;
-      case 'vaccinationHistory':
-        return <VaccinationHistory user_id={user_id}/>;
-      case 'testList':
-        return <TestList user_id={user_id}/>;
-      case 'logout':
-        return <Login />;
+
+    if (currentPage === 'profile') {
+    if (profileData) {
+      if (profileData.patient_or_doc & profileData.staff_or_student) {
+        return <StaffProfile profileData={profileData} />;
+      }else if (profileData.patient_or_doc) {
+        return <StudentProfile profileData={profileData} />;
+      }else {
+        return <DoctorProfile profileData={profileData} />;
+      }
+    } 
+    else {
+      return <Profile profileData={profileData} />;
+    }
+
+    }else{
+      switch (currentPage) {
+        case 'appointments':
+          return <Appointments user_id={user_id} userType={profileData && profileData.patient_or_doc} />;
+        case 'medicalHistory':
+          return <MedicalHistory user_id={user_id} />;
+        case 'vaccinationHistory':
+          return <VaccinationHistory user_id={user_id} />;
+        case 'testList':
+          return <TestList user_id={user_id} />;
+        case 'logout':
+          return <Login />;
         case 'all-medicine':
-          return <AllMedicines/>;
-      default:
-        return <Profile />;
+          return <AllMedicines />;
+        default:
+          return <Profile />;
+      }
     }
   };
-
+  
 
   return (
-<div>
-
-  <div className="container-fluid px-0">
-    <div className="row g-0">
+<div style={{width:'100%',top:'0',left:'0', position:'absolute', overflow:'hidden'}}>
+  <div style={{width:'100%',top:'0',left:'0', position:'relative'}}>
     <Navbar onPageChange={handlePageChange} userType={profileData && profileData.patient_or_doc} />
-      <div className="col-lg-6 vh-100">
-      {renderPageContent()}
-      </div>
-
-    </div>
   </div>
-
+  <div className='w-50 mx-auto' style={{position:'relative',}}>
+    {renderPageContent()}
+  </div>
 </div>
 
   );
