@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from .models import MyUser, Patient, Doctor, Student, Staff, Appointment, MedicineMaster
-from .models import MedicalHistory, Vaccine, Test, Symptoms, Medicine
+from .models import MedicalHistory, Vaccine, Test, Symptoms, Medicine, TestMaster, VaccineMaster
 
 class MyUserSerializer(ModelSerializer):
     class Meta:
@@ -60,4 +60,14 @@ class SymptomsSerializer(ModelSerializer):
 class MedicineSerializer(ModelSerializer):
     class Meta:
         model = Medicine
+        fields = '__all__'
+
+class TestMasterSerializer(ModelSerializer):
+    class Meta:
+        model = TestMaster
+        fields = '__all__'
+
+class VaccineMasterSerializer(ModelSerializer):
+    class Meta:
+        model = VaccineMaster
         fields = '__all__'
