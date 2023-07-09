@@ -103,9 +103,18 @@ def getMedicalHistory(request):
 def getVaccines(request):
     try:
         patient = request.GET.get('patient_id')
-        vaccines = Vaccine.objects.filter(patient_id = patient)
-        vaccines_data = VaccineSerializer(vaccines, many=True).data
-        return Response({'vaccines_data': vaccines_data})
+        all_vaccines = Vaccine.objects.filter(patient_id = patient)
+        all_vaccines_data = []
+        for vaccine in all_vaccines:
+            vaccine_data = VaccineSerializer(vaccine).data
+            vaccine_master_id = vaccine_data.get('vaccine_master')
+            
+            vaccine_master = VaccineMaster.objects.get(id=vaccine_master_id)
+            vaccine_data['name'] = vaccine_master.name
+            vaccine_data['details'] = vaccine_master.details
+            all_vaccines_data.append(vaccine_data)
+        
+        return Response({'vaccines_data': all_vaccines_data})
     except:
         return Response({'error': 'Vaccine data does not exist!!'})
 
@@ -128,7 +137,12 @@ def getTestsByPatient(request):
             tests = Test.objects.filter(appointment=appointment)
             for test in tests:
                 test_data = TestSerializer(test).data
+                test_master_id = test_data.get('test_master')
+                test_master = TestMaster.objects.get(id=test_master_id)
+                test_data['name'] = test_master.name
+                test_data['details'] = test_master.details
                 all_tests_data.append(test_data)
+
 
         return Response({'all_tests_data': all_tests_data})
 
@@ -149,7 +163,7 @@ def getAllTests(request):
     try:
         all_tests = TestMaster.objects.all()
         data = TestMasterSerializer(all_tests, many=True).data
-        return Response([{'all_tests_data': data}])
+        return Response(data)
     except:
         return Response({'error': 'Test data does not exist!!'})
 
@@ -158,7 +172,7 @@ def getAllVaccines(request):
     try:
         all_vaccines = VaccineMaster.objects.all()
         data = VaccineMasterSerializer(all_vaccines, many=True).data
-        return Response([{'all_vaccines_data': data}])
+        return Response(data)
     except:
         return Response({'error': 'Vaccine data does not exist!!'})
 
@@ -187,8 +201,19 @@ def getMedicines(appointment):
     return MedicineSerializer(medicines, many=True).data
 
 def getTestsData(appointment):
-    tests = Test.objects.filter(appointment=appointment)
-    return TestSerializer(tests, many=True).data
+    all_tests = Test.objects.filter(appointment=appointment)
+    all_tests_data = []
+
+    for test in all_tests:
+        test_data = TestSerializer(test).data
+        test_master_id = test_data.get('test_master')
+        test_master = TestMaster.objects.get(id=test_master_id)
+        test_data['name'] = test_master.name
+        test_data['details'] = test_master.details
+        
+        all_tests_data.append(test_data)
+
+    return all_tests_data
 
 def getSymptoms(appointment):
     symptoms = Symptoms.objects.get(appointment=appointment)

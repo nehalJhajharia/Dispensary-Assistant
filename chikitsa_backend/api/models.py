@@ -37,7 +37,7 @@ class Student(models.Model):
     course = models.CharField(max_length=30)
     admission_num = models.CharField(max_length=20)
     hostel_num_and_name = models.CharField(max_length=100)
-    room_num = models.CharField(max_length=5)
+    room_num = models.CharField(max_length=5, default='-1')
     father_occupation = models.CharField(max_length=100)
     mother_occupation = models.CharField(max_length=100)
     father_mobile = models.CharField(max_length=100)
