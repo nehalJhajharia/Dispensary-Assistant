@@ -4,7 +4,7 @@ import { Button, Modal } from 'react-bootstrap';
 import UrlContext from './context/UrlContext';
 import 'bootstrap/dist/css/bootstrap.css';
 import loadUserData from './local-data/UserGet';
-import separateDateTime from './SeparateDateTime';
+import { convertDate, separateDateTime } from './SeparateDateTime';
 
 function TestList() {
   const [testList, setTestList] = useState([]);
@@ -128,7 +128,7 @@ function TestList() {
           <tr key={item.id}>
             <td>{item.appointment}</td>
             <td>{item.name}</td>
-            <td>{item.date}</td>
+            <td>{convertDate(item.date)}</td>
             <td>{item.remarks}</td>
             <td>{item.details}</td>
           </tr>

@@ -1,11 +1,17 @@
-const separateDateTime = (dateTimeString) => {
-    const dateTime = new Date(dateTimeString);
-    const time =  dateTime.toLocaleTimeString([], { hour: 'numeric', minute: 'numeric' });
-    // const date  = dateTime.toLocaleDateString();
-    const options = { day: '2-digit', month: 'short', year: 'numeric' };
-    const date = dateTime.toLocaleString([], options);
+export const convertDate = (dateString) => {
+  const date = new Date(dateString);
+  const options = { day: '2-digit', month: 'long', year: 'numeric' };
+  return date.toLocaleString([], options);
+};
 
-    return {date, time};
-}
+export const separateDateTime = (dateTimeString) => {
+  const dateTime = new Date(dateTimeString);
 
-export default separateDateTime;
+  const timeOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
+  const time = dateTime.toLocaleTimeString([], timeOptions).toUpperCase();
+
+  const date = convertDate(dateTime.toISOString().split('T')[0]);
+
+  return { date, time };
+};
+  

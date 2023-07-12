@@ -14,6 +14,7 @@ urlpatterns = [
     path('patient/create/vaccine/', views.createNewVaccine), # (patient_id, vaccine_master_id, date)
     path('patient/get/tests/', views.getTests), # (appointment_id)
     path('patient/create/test/', views.createNewTest), # (appointment_id, test_master_id, date, remarks)
+    path('patient/create/medicine/', views.createNewMedicine), # (appointment_id, medicine details)
     path('patient/get/all-tests/', views.getTestsByPatient), # (patient_id)
     path('patient/get/appointments/', views.getAppointmentByPatient), # (patient_id)
     path('patient/get/standing-appointment/', views.checkStandingAppointment), # (patient_id)

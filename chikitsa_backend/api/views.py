@@ -90,14 +90,16 @@ def getStaff(user_id):
     staff_data = StaffSerializer(staff).data
     return staff_data
 
+def getMedicalHistoryData(patient):
+    medical_history = MedicalHistory.objects.get(patient = patient)
+    history_data = MedicalHistorySerializer(medical_history).data
+    return history_data
+
 @api_view(['GET'])
 def getMedicalHistory(request):
     try:
-        patient = request.GET.get('patient_id')
-        print(patient)
-        medical_history = MedicalHistory.objects.get(patient = patient)
-        history_data = MedicalHistorySerializer(medical_history).data
-        return Response(history_data)
+        patient_id = request.GET.get('patient_id')
+        return Response(getMedicalHistoryData(patient_id))
     except:
         return Response({'error': 'Medical History does not exist!!'}, status=500)
 
@@ -258,6 +260,11 @@ def getAppointmentDetails(request):
         appointment_id = request.GET.get('appointment_id')
         appointment = Appointment.objects.get(id=appointment_id)
         details = AppointmentSerializer(appointment, many=False).data
+        patient = Patient.objects.get(user=appointment.patient)
+        details['sex'] = patient.sex
+        details['dob'] = patient.dob
+        details['blood_group'] = patient.blood_group
+        details['medical_history'] = getMedicalHistoryData(appointment.patient)
         details['symptoms'] = getSymptoms(appointment)
         details['medicines'] = getMedicines(appointment)
         details['tests'] = getTestsData(appointment)
@@ -316,6 +323,30 @@ def createNewTest(request):
             # image = data['image']
         )
         return Response({'message': 'Test created successfully.'})
+    except KeyError as e:
+        return Response({'error': f'Missing required field: {str(e)}'}, status=500)
+    except ValidationError as e:
+        return Response({'error': str(e)}, status=500)
+    
+@api_view(['POST'])
+def createNewMedicine(request):
+    try:
+        data = convertBooleans(request.data)
+        print(data)
+        appointment = Appointment.objects.get(id=data['appointment_id'])
+        med_master = MedicineMaster.objects.get(id=data['med_master_id'])
+
+        Medicine.objects.create(
+            appointment = appointment,
+            medicine_master = med_master,
+            start_date = data['start_date'],
+            end_date = data['end_date'],
+            morning = data['morning'],
+            noon = data['noon'],
+            evening = data['evening'],
+            after_food = data['after_food'],
+        )
+        return Response({'message': 'Medicine created successfully.'})
     except KeyError as e:
         return Response({'error': f'Missing required field: {str(e)}'}, status=500)
     except ValidationError as e:

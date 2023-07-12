@@ -1,13 +1,6 @@
 import React from 'react';
 
 function Profile({profileData}) {
-  const formatDateAndTime = (dateTimeString) => {
-    const dateObj = new Date(dateTimeString);
-    const formattedDate = dateObj.toLocaleDateString();
-    const formattedTime = dateObj.toLocaleTimeString();
-    return { formattedDate, formattedTime };
-  };
-
   return (
     <div>
       {profileData ? (

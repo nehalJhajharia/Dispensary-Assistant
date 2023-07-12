@@ -3,6 +3,7 @@ import UrlContext from './context/UrlContext';
 import { Button, Modal } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import loadUserData from './local-data/UserGet';
+import { convertDate } from './SeparateDateTime';
 
 const VaccinationHistory = () => {
   const [vaccinationHistoryEntries, setVaccinationHistoryEntries] = useState([]);
@@ -95,7 +96,7 @@ const VaccinationHistory = () => {
           {vaccinationHistoryEntries.map((entry) => (
             <tr key={entry.id}>
               <td>{entry.name}</td>
-              <td>{entry.date}</td>
+              <td>{convertDate(entry.date)}</td>
               <td>{entry.details}</td>
             </tr>
           ))}

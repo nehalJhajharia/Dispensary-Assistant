@@ -1,11 +1,12 @@
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import UrlContext from './context/UrlContext';
 import { Modal } from 'react-bootstrap';
 import AppointmentDetails from './AppointmentDetails';
-import separateDateTime from './SeparateDateTime';
+import { separateDateTime } from './SeparateDateTime';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
+import saveCurrentAppointment from './local-data/AppoinmentSet';
 
 const Appointment = ({ appointment , userType}) => {
   const [status, setStatus]  = useState(appointment.status);
@@ -15,6 +16,7 @@ const Appointment = ({ appointment , userType}) => {
   const view_icon = <FontAwesomeIcon icon={faEye} />;
   const check = <FontAwesomeIcon icon={faCheck} />;
   const cross = <FontAwesomeIcon icon={faXmark} />;
+  const navigate = useNavigate();
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -57,6 +59,11 @@ const Appointment = ({ appointment , userType}) => {
     handleClose();
   }
 
+  const handleView = () => {
+    saveCurrentAppointment(appointment.id);
+    navigate(`/appointment-details/`);
+  }
+
   const updateAppointmentStatus = async (status) => {
     const formData = new FormData();
     formData.append('appointment_id', appointment.id);
@@ -89,8 +96,8 @@ const Appointment = ({ appointment , userType}) => {
       <td>{separateDateTime(appointment.datetime).time}</td>
       <td style={{ color: textColor }}>{statusText}</td>
       <td>
-        <button onClick={handleShow} className='px-3 py-1 mx-auto btn btn-success' style={{position:'relative'}}>{view_icon}</button>
-        <Modal size="lg" show={show} onHide={handleClose}>
+        <button onClick={handleView} className='px-3 py-1 mx-auto btn btn-success' style={{position:'relative'}}>{view_icon}</button>
+        <Modal size="xl" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title><strong>Appointment Details</strong></Modal.Title>
         </Modal.Header>

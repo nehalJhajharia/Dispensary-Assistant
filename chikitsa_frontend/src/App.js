@@ -24,7 +24,7 @@ function App() {
           <Route exact path="/login" element={<Login/>} />
           <Route exact path='/profile' element={<ProfilePage/>} />
           <Route exact path="/create-appointment" element={<CreateAppointment />} />
-          <Route exact path="/appointment-details/:appointment_id" element={<AppointmentDetails />} />
+          <Route exact path="/appointment-details/" element={<AppointmentDetails />} />
           <Route exact path="/create-test" element={<CreateTest />} />
           <Route exact path="/signup" element={<SignupPage />} />
           <Route exact path='/edit-medical-history' element={<EditMedicalHistory />} />

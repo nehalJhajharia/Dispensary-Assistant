@@ -1,6 +1,6 @@
 import React from 'react';
 import './navbar.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import deleteLocalData from './local-data/ClearLocalData';
 
