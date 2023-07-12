@@ -9,7 +9,7 @@ class MyUser(models.Model):
     middle_name = models.CharField(max_length=20, null=True, blank=True)
     last_name = models.CharField(max_length=20, null=False)
     mobile_personal = models.CharField(validators=[minl(10)], max_length=10, null=False)
-    state = models.CharField(max_length=20, null=False)
+    state = models.CharField(max_length=50, null=False)
     district = models.CharField(max_length=30, null=False)
     pincode = models.CharField(validators=[minl(6)], max_length=6, null=False)
     address_line = models.CharField(max_length=100, null=True, blank=True)

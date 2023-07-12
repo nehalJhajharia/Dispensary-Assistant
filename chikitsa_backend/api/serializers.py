@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ReadOnlyField
 from .models import MyUser, Patient, Doctor, Student, Staff, Appointment, MedicineMaster
 from .models import MedicalHistory, Vaccine, Test, Symptoms, Medicine, TestMaster, VaccineMaster
 
@@ -48,6 +48,11 @@ class MedicineMasterSerializer(ModelSerializer):
         fields = '__all__'
 
 class AppointmentSerializer(ModelSerializer):
+    patient_first_name = ReadOnlyField(source='patient.user.first_name')
+    patient_last_name = ReadOnlyField(source='patient.user.last_name')
+    doctor_first_name = ReadOnlyField(source='doctor.user.first_name')
+    doctor_last_name = ReadOnlyField(source='doctor.user.last_name')
+
     class Meta:
         model = Appointment
         fields = '__all__'

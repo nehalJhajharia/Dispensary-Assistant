@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.core.exceptions import ValidationError
+from django.db.models import Case, IntegerField, Value, When, F
 from django.forms.models import model_to_dict
 from .models import MyUser, Patient, Doctor, Student, Staff, MedicalHistory
 from .models import Vaccine, Test, MedicineMaster, Appointment, Symptoms, Medicine
@@ -68,12 +69,12 @@ def getDoctor(user):
 def getAllDoctors(request):
     try:
         all_doctors = Doctor.objects.all()
-        all_doc_data = {}
+        all_doc_data = []
 
         for doctor in all_doctors:
             id = doctor.user_id
             doc_data = getMyUserById(id)
-            all_doc_data[f'{str(id)}'] = f'{str(doc_data)}'
+            all_doc_data.append(doc_data)
 
         return Response(all_doc_data)
     except:
@@ -93,11 +94,12 @@ def getStaff(user_id):
 def getMedicalHistory(request):
     try:
         patient = request.GET.get('patient_id')
+        print(patient)
         medical_history = MedicalHistory.objects.get(patient = patient)
         history_data = MedicalHistorySerializer(medical_history).data
         return Response(history_data)
     except:
-        return Response({'error': 'Medical History does not exist!!'})
+        return Response({'error': 'Medical History does not exist!!'}, status=500)
 
 @api_view(['GET'])
 def getVaccines(request):
@@ -180,7 +182,18 @@ def getAllVaccines(request):
 def getAppointmentByPatient(request):
     try:
         patient_id = request.GET.get('patient_id')
-        appointments = Appointment.objects.filter(patient=patient_id)
+        appointments = Appointment.objects.filter(patient=patient_id).order_by(
+            Case(
+                When(status=0, then=Value(1)),
+                When(status=1, then=Value(2)),
+                When(status=-1, then=Value(3)),
+                When(status=-2, then=Value(4)),
+                When(status=2, then=Value(5)),
+                default=Value(6),
+                output_field=IntegerField()
+            ),
+            F('datetime').desc()
+        )
         appointments_data = AppointmentSerializer(appointments, many=True).data
         return Response({'appointments': appointments_data})
     except:
@@ -190,15 +203,35 @@ def getAppointmentByPatient(request):
 def getAppointmentByDoctor(request):
     try:
         doctor_id = request.GET.get('doctor_id')
-        appointments = Appointment.objects.filter(doctor=doctor_id)
+        appointments = Appointment.objects.filter(doctor=doctor_id).order_by(
+            Case(
+                When(status=0, then=Value(1)),
+                When(status=1, then=Value(2)),
+                When(status=-1, then=Value(3)),
+                When(status=-2, then=Value(4)),
+                When(status=2, then=Value(5)),
+                default=Value(6),
+                output_field=IntegerField()
+            ),
+            F('datetime').desc()
+        )
         appointments_data = AppointmentSerializer(appointments, many=True).data
         return Response({'appointments': appointments_data})
     except:
         return Response({'error': 'Appointment does not exist!!'})
 
 def getMedicines(appointment):
-    medicines = Medicine.objects.filter(appointment=appointment)
-    return MedicineSerializer(medicines, many=True).data
+    all_meds = Medicine.objects.filter(appointment=appointment)
+    all_med_data = []
+
+    for med in all_meds:
+        med_data = MedicineSerializer(med).data
+        med_master_id = med_data['medicine_master']
+        med_master = MedicineMaster.objects.get(id=med_master_id)
+        med_data['name'] = med_master.name
+        all_med_data.append(med_data)
+
+    return all_med_data
 
 def getTestsData(appointment):
     all_tests = Test.objects.filter(appointment=appointment)
@@ -232,6 +265,22 @@ def getAppointmentDetails(request):
     except:
         return Response({'error': 'Appointment does not exist!!'})
 
+@api_view(['GET'])
+def checkStandingAppointment(request):
+    try:
+        patient_id = request.GET['patient_id']
+
+        # Check if the patient has an existing appointment with status 0 or 1
+        existing_appointment = Appointment.objects.filter(patient_id=patient_id, status__in=[0, 1]).first()
+        print(existing_appointment)
+        if existing_appointment:
+            return Response(True)
+        return Response(False)
+    except KeyError as e:
+        return Response({'error': f'Missing required field: {str(e)}'}, status=400)
+    except ValidationError as e:
+        return Response({'error': str(e)}, status=500)
+
 ####################### POST #######################
 
 @api_view(['POST'])
@@ -248,9 +297,9 @@ def createNewVaccine(request):
         )
         return Response({'message': 'Vaccine created successfully.'})
     except KeyError as e:
-        return Response({'error': f'Missing required field: {str(e)}'})
+        return Response({'error': f'Missing required field: {str(e)}'}, status=500)
     except ValidationError as e:
-        return Response({'error': str(e)})
+        return Response({'error': str(e)}, status=500)
     
 @api_view(['POST'])
 def createNewTest(request):
@@ -268,9 +317,9 @@ def createNewTest(request):
         )
         return Response({'message': 'Test created successfully.'})
     except KeyError as e:
-        return Response({'error': f'Missing required field: {str(e)}'})
+        return Response({'error': f'Missing required field: {str(e)}'}, status=500)
     except ValidationError as e:
-        return Response({'error': str(e)})
+        return Response({'error': str(e)}, status=500)
     
 @api_view(['POST'])
 def createNewMedicineMater(request):
@@ -284,9 +333,9 @@ def createNewMedicineMater(request):
         new_medicine.save()
         return Response({'message': 'Medicine created successfully.'})
     except KeyError as e:
-        return Response({'error': f'Missing required field: {str(e)}'})
+        return Response({'error': f'Missing required field: {str(e)}'}, status=500)
     except ValidationError as e:
-        return Response({'error': str(e)})
+        return Response({'error': str(e)}, status=500)
     
 def getNewMyUser(request):
     try:
@@ -365,7 +414,8 @@ def createStudent(request):
                     setattr(new_student, field, data[field])
 
             new_student.save()
-            return Response({'message': 'Student created successfully'})
+            return Response({'message': 'Student created successfully',
+                             'id': str(user.id)})
         except KeyError as e:
             user.delete()
             return Response({'error': f'Missing required field: {str(e)}'})
@@ -388,7 +438,10 @@ def createStaff(request):
                     setattr(new_staff, field, data[field])
 
             new_staff.save()
-            return Response({'message': 'Staff created successfully'})
+            id = user.id
+            print(id)
+            return Response({'message': 'Staff created successfully',
+                            'id': str(user.id)})
         except KeyError as e:
             user.delete()
             return Response({'error': f'Missing required field: {str(e)}'})
@@ -425,25 +478,33 @@ def createMedicalHistory(request):
 def createAppointment(request):
     try:
         data = convertBooleans(request.data)
+        print(data)
         patient_id = data['patient_id']
         doctor_id = data['doctor_id']
+
+        # Check if the patient has an existing appointment with status 0 or 1
+        existing_appointment = Appointment.objects.filter(patient_id=patient_id, status__in=[0, 1]).first()
+        if existing_appointment:
+            return Response({'error': 'Standing appointment.'}, status=500)
+
         patient = Patient.objects.get(user_id=patient_id)
         doctor = Doctor.objects.get(user_id=doctor_id)
         appointment = Appointment.objects.create(
-            patient = patient,
-            doctor = doctor,
-            datetime = data['datetime']
+            patient=patient,
+            doctor=doctor,
+            datetime=data['datetime']
         )
 
         symptoms_created, response = createSymptoms(data, appointment)
         if not symptoms_created:
             appointment.delete()
-        
+
         return response
     except KeyError as e:
-        return Response({'error': f'Missing required field: {str(e)}'})
+        return Response({'error': f'Missing required field: {str(e)}'}, status=400)
     except ValidationError as e:
-        return Response({'error': str(e)})
+        return Response({'error': str(e)}, status=500)
+
 
 def createSymptoms(data, appointment):
     try:
