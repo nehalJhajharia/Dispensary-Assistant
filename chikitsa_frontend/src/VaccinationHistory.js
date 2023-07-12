@@ -2,14 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import UrlContext from './context/UrlContext';
 import { Button, Modal } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
-import { UserContext } from './context/UserContext';
+import loadUserData from './local-data/UserGet';
 
 const VaccinationHistory = () => {
   const [vaccinationHistoryEntries, setVaccinationHistoryEntries] = useState([]);
   const [vaccineName, setVaccineName] = useState('');
   const [allVaccines, setAllVaccines] = useState([]);
   const [date, setDate] = useState('');
-  const { user_id } = useContext(UserContext); 
+  const user = loadUserData();
   const url = useContext(UrlContext);
   const user_uri = url + 'api/patient/get/vaccines/?patient_id=';
   const user_uri_create = url + 'api/patient/create/vaccine/';
@@ -19,7 +19,6 @@ const VaccinationHistory = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-
   //fetching vaccination history for patient
   useEffect(() => {
     fetchVaccinationHistory();
@@ -27,7 +26,7 @@ const VaccinationHistory = () => {
 
   const fetchVaccinationHistory = async () => {
     try {
-      const response = await fetch(`${user_uri}${user_id}`);
+      const response = await fetch(`${user_uri}${user.id}`);
       const jsonData = await response.json();
       const key = Object.keys(jsonData)[0];
       setVaccinationHistoryEntries(jsonData[key]);
@@ -40,7 +39,7 @@ const VaccinationHistory = () => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('patient_id', user_id);
+    formData.append('patient_id', user.id);
     formData.append('vaccine_master_id', vaccineName);
     formData.append('date', date);
     // Send the data to the server
@@ -103,9 +102,9 @@ const VaccinationHistory = () => {
         </tbody>
       </table>
 
-      <button onClick={handleShow} className='mt-3 w-100 mx-auto' style={{position:'relative',}}>Add Vaccine</button>
+      <button onClick={handleShow} className='mt-3 w-100 mx-auto btn btn-success' style={{position:'relative',}}>Add Vaccine</button>
 
-      <Modal size="lg" show={show} onHide={handleClose}>
+      <Modal size="sm" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title><strong>Create Vaccine</strong></Modal.Title>
         </Modal.Header>
@@ -136,7 +135,7 @@ const VaccinationHistory = () => {
                 required
               />
 
-              <button className='mt-4' type="submit">Submit</button>
+              <button className='mt-4 btn btn-success' type="submit">Submit</button>
             </form>
           </div>
         </Modal.Body>

@@ -1,34 +1,42 @@
 import React from 'react';
 import './navbar.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
+import deleteLocalData from './local-data/ClearLocalData';
 
 const Navbar = ({ onPageChange, userType }) => {
-  return (
-    <nav className='bg-success bg-gradient'>
-      <div className='container-fluid' style={{display:'flex', justifyContent:'space-between'}}>
+  const navigate = useNavigate();
 
-        <div>
-          <a href='https://www.google.com/'>
-            <img src='https://www.svnit.ac.in/conference/frsm2023/hit/svnit_logo.png' alt="logo" height="40px"></img>
+  const handleLogout = () => {
+    deleteLocalData();
+    navigate(`/`);
+  }
+
+  return (
+    <nav className='bg-success'>
+      <div className='container-fluid' style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+          <a href='#'>
+            <img src={require('./images/logo.png').default} alt="logo" style={{height:'32px'}} />
           </a>
-          <button className='btn navbar-brand'>SVNIT Dispensary</button>
+            <h4 className='mx-2 my-auto text-white navbar-brand'><strong>SVNIT Dispensary</strong></h4>
         </div>
 
         <div style={{justifyContent:'space-between'}}>
-          <button className='btn' href="#" onClick={() => onPageChange('profile')}>Profile</button>
-          <button className='btn' href="#" onClick={() => onPageChange('appointments')}>Appointments</button>
+          <button className='btn text-white' href="#" onClick={() => onPageChange('profile')}><strong>Profile</strong></button>
+          <button className='btn text-white' href="#" onClick={() => onPageChange('appointments')}><strong>Appointments</strong></button>
           {userType ? (
             <>
-              <button className='btn' href="#"  onClick={() => onPageChange('medicalHistory')}>Medical History</button>
-              <button className='btn' href="#" onClick={() => onPageChange('vaccinationHistory')}>Vaccination History</button>
-              <button className='btn' href="#" onClick={() => onPageChange('testList')}>Test List</button>
+              <button className='btn text-white' href="#" onClick={() => onPageChange('medicalHistory')}><strong>Medical History</strong></button>
+              <button className='btn text-white' href="#" onClick={() => onPageChange('vaccinationHistory')}><strong>Vaccines</strong></button>
+              <button className='btn text-white' href="#" onClick={() => onPageChange('testList')}><strong>Tests</strong></button>
             </>  
           ) : (
-          <button className='btn' href="#" onClick={() => onPageChange('all-medicine')}>All Medicines</button>
+          <button className='btn text-white' href="#" onClick={() => onPageChange('all-medicine')}><strong>All Medicines</strong></button>
           )}
-          <button className='btn'>
-            <Link to="/login" className='nav-link'>Logout</Link>
+          <button className='btn text-white' onClick={handleLogout}>
+            <strong>Logout</strong>
           </button>
         </div>
       </div>

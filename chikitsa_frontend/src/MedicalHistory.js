@@ -3,11 +3,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UrlContext from './context/UrlContext';
 import 'bootstrap/dist/css/bootstrap.css';
+import loadUserData from './local-data/UserGet';
 
-function MedicalHistory ({user_id}) {
+function MedicalHistory () {
   const navigate = useNavigate();
   const [medicalData, setMedicalData] = useState([]);
   const url = useContext(UrlContext);
+  const user = loadUserData();
   const user_uri = url + 'api/patient/get/medical-history/?patient_id=';
 
   useEffect(() => {
@@ -16,7 +18,7 @@ function MedicalHistory ({user_id}) {
 
   const fetchMedicalHistory = async () => {
     try {
-      const response = await fetch(`${user_uri}${user_id}`);
+      const response = await fetch(`${user_uri}${user.id}`);
       if(response.ok){
         const jsonData = await response.json();
         setMedicalData(jsonData);
@@ -77,9 +79,11 @@ function MedicalHistory ({user_id}) {
           </tr>
         </tbody>
       </table>
-      <button className='mt-3 w-100 mx-auto' style={{position:'relative',}} onClick={() =>
-        navigate("/edit-medical-history", {state: medicalData})
-      }>Edit</button>
+      <div className='text-center'>
+        <button className='mt-3 w-25 mx-auto btn btn-danger' style={{position:'relative'}} onClick={() =>
+          navigate("/edit-medical-history", {state: medicalData})
+        }>Edit</button>
+      </div>
       </div>
     </div>
   );

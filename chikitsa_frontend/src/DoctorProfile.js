@@ -22,7 +22,7 @@ const DoctorProfile = ({ profileData }) => {
             </tr>
             <tr>
               <td>Address</td>
-              <td><Address profileData={profileData}></Address></td>
+              <td><Address profileData={profileData} /></td>
             </tr>
           </tbody>
         </table>

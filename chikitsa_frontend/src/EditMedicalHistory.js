@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import UrlContext from "./context/UrlContext";
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -19,6 +20,7 @@ const EditMedicalHistory = () => {
     chronic_disease: state.chronic_disease,
     allergic_medicine: state.allergic_medicine,
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(state);
@@ -70,6 +72,7 @@ const EditMedicalHistory = () => {
     } catch (error) {
       console.error('Error updating medical data:', error);
     }
+    navigate(`/profile`);
   };
   
 
@@ -82,47 +85,47 @@ const EditMedicalHistory = () => {
           <h5>Self</h5>
           <tr>
             <td>Hypertension (Self)</td>
-            <td><input type="checkbox" name="hypertension_self" value="true" checked={formValues.hypertension_self} onChange={handleBooleanChange} /></td>
+            <td><input className='form-check-input form-check-input-lg' type="checkbox" name="hypertension_self" value="true" checked={formValues.hypertension_self} onChange={handleBooleanChange} /></td>
           </tr>
           <tr>
             <td>Diabetes (Self)</td>
-            <td><input type="checkbox" name="diabetes_self" value="true" checked={formValues.diabetes_self} onChange={handleBooleanChange} /></td>
+            <td><input className='form-check-input form-check-input-lg' type="checkbox" name="diabetes_self" value="true" checked={formValues.diabetes_self} onChange={handleBooleanChange} /></td>
           </tr>
           <tr>
             <td>Allergic Medicine</td>
-            <td><input type="text" name="allergic_medicine" value={formValues.allergic_medicine} onChange={handleTextChange}/></td>
+            <td><input className="form-control" type="text" name="allergic_medicine" value={formValues.allergic_medicine} onChange={handleTextChange}/></td>
           </tr>
           <tr>
             <td>Chronic Disease</td>
-            <td><input type="text" name="chronic_disease" value={formValues.chronic_disease} onChange={handleTextChange}/></td>
+            <td><input className="form-control" type="text" name="chronic_disease" value={formValues.chronic_disease} onChange={handleTextChange}/></td>
           </tr>
           <tr>
             <td>Previous Operation Injury</td>
-            <td><input type="text" name="prev_operation_injury" value={formValues.prev_operation_injury} onChange={handleTextChange}/></td>
+            <td><input className="form-control" type="text" name="prev_operation_injury" value={formValues.prev_operation_injury} onChange={handleTextChange}/></td>
           </tr>
           <br />
           <h5>Father</h5>
           <tr>
             <td>Hypertension (Father)</td>
-            <td><input type="checkbox" name="hypertension_father" value="true" checked={formValues.hypertension_father} onChange={handleBooleanChange} /></td>
+            <td><input className='form-check-input form-check-input-lg' type="checkbox" name="hypertension_father" value="true" checked={formValues.hypertension_father} onChange={handleBooleanChange} /></td>
           </tr>
           <tr>
             <td>Diabetes (Father)</td>
-            <td><input type="checkbox" name="diabetes_father" value="true" checked={formValues.diabetes_father} onChange={handleBooleanChange} /></td>
+            <td><input className='form-check-input form-check-input-lg' type="checkbox" name="diabetes_father" value="true" checked={formValues.diabetes_father} onChange={handleBooleanChange} /></td>
           </tr>
           <br />
           <h5>Mother</h5>
           <tr>
             <td>Hypertension (Mother)</td>
-            <td><input type="checkbox" name="hypertension_mother" value="true" checked={formValues.hypertension_mother} onChange={handleBooleanChange} /></td>
+            <td><input className='form-check-input form-check-input-lg' type="checkbox" name="hypertension_mother" value="true" checked={formValues.hypertension_mother} onChange={handleBooleanChange} /></td>
           </tr>
           <tr>
             <td>Diabetes (Mother)</td>
-            <td><input type="checkbox" name="diabetes_mother" value="true" checked={formValues.diabetes_mother} onChange={handleBooleanChange} /></td>
+            <td><input className='form-check-input form-check-input-lg' type="checkbox" name="diabetes_mother" value="true" checked={formValues.diabetes_mother} onChange={handleBooleanChange} /></td>
           </tr>
         </tbody>
       </table>
-      <button className='mt-3 mb-5' type="submit">Update</button>
+      <button className='mt-3 mb-5 w-25 mx-auto btn btn-danger' type="submit">Update</button>
       </form>
     </div>
   );

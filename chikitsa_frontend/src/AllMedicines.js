@@ -27,28 +27,28 @@ const AllMedicines = () => {
   };
 
   return (
-    <div>
-      <h2>All Medicines</h2>
-      <table>
+    <div className='mt-3' style={{alignContent:'center'}}>
+      <h2 style={{textAlign:'center'}}>MEDICINE CATALOG</h2>
+      <table className='table table-sm'>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Name</th>
-            <th>Count</th>
-            <th>Date of Manufacturing</th>
-            <th>Date of Expiry</th>
             <th>Type</th>
+            <th>Count</th>
+            <th>Date of Mfg</th>
+            <th>Date of Exp</th>
+            <th>Company</th>
           </tr>
         </thead>
         <tbody>
           {medicineList.map((medicine) => (
             <tr key={medicine.id}>
-              <td>{medicine.id}</td>
               <td>{medicine.name}</td>
+              <td>{medicine.type}</td>
               <td>{medicine.count}</td>
               <td>{medicine.date_of_mfg}</td>
               <td>{medicine.date_of_expiry}</td>
-              <td>{medicine.type}</td>
+              <td>{medicine.company}</td>
             </tr>
           ))}
         </tbody>
