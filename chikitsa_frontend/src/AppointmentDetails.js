@@ -589,7 +589,7 @@ const AppointmentDetails = () => {
     <>
     <div className='w-100 my-3' style={{ display:'flex', overflow:'hidden', position:'absolute', top:0, left:0, justifyContent:'space-evenly' }}>
       <div>
-        <div className='container'>
+        <div>
           <div style={{ display:'flex', justifyContent:'space-between' }}>
             <h2>{appointmentDetails.patient_first_name} {appointmentDetails.patient_last_name}</h2>
             <h3>Dr. {appointmentDetails.doctor_first_name} {appointmentDetails.doctor_last_name}</h3>

@@ -1,6 +1,6 @@
 export const convertDate = (dateString) => {
   const date = new Date(dateString);
-  const options = { day: '2-digit', month: 'long', year: 'numeric' };
+  const options = { day: '2-digit', month: 'short', year: 'numeric' };
   return date.toLocaleString([], options);
 };
 
